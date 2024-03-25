@@ -1,23 +1,16 @@
 import getpass
 from datetime import datetime
 
-from gmail_api import get_emails_by_label_date_range
+from gmail_api_2 import get_emails_by_label_date_range
 from theme_analysis import analyze_themes
 from report_generation import generate_report
 
-def f2():
-  f1()
-  
-def f1():
-  print('hello')
 
 def main():
   """
   Main function to orchestrate the program flow.
   """
-
-  f2()
-  
+ 
   # Get user input
   label_name = input("Enter the Gmail label name for tech newsletters: ")
   start_date_str = input("Enter start date (YYYY-MM-DD): ")
@@ -51,5 +44,7 @@ def main():
 
   print("Analysis complete! The report has been generated.")
 
+'''
 if __name__ == "__main__":
   main()
+'''

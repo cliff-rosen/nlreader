@@ -1,50 +1,32 @@
+from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from httplib2 import Http
-from oauth2client.service_account import ServiceAccountCredentials
+from google.auth.transport.requests import Request
+import os, pickle
 
-def get_emails_by_label_date_range(username, password, label_name, start_date, end_date):
-  """
-  Connects to Gmail API using OAuth and retrieves emails based on criteria.
+# If modifying these scopes, delete the file token.pickle.
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+CREDENTIALS_FILE = 'secrets/client_secret_604005571-hu893qnfe3nns3rj4uvc4a0clgji88da.apps.googleusercontent.com.json'
 
-  Args:
-      username: Gmail username for authentication.
-      password: Gmail password for authentication.
-      label_name: Name of the label containing tech newsletters.
-      start_date: Start date for the date range (datetime.date object).
-      end_date: End date for the date range (datetime.date object).
+def get_service():
+    creds = None
+    # The file token.pickle stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('secrets/token.pickle'):
+        with open('secrets/token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                CREDENTIALS_FILE, SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('secrets/token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
 
-  Returns:
-      A list of dictionaries representing the retrieved emails.
-  """
-
-  # Replace with path to your service account key file (for production)
-  credentials = ServiceAccountCredentials.from_json_keyfile_name(
-      'path/to/your/service_account.json', scopes=['https://www.googleapis.com/auth/gmail.readonly'])
-
-  # Uncomment for username/password authentication (less secure for production)
-  # http = Http()
-  # credentials = credentials.authorize(http)
-
-  service = build('gmail', 'v1', credentials=credentials)
-
-  # Define search query based on label and date range
-  query = f'label:{label_name} after:{start_date.strftime("%Y/%m/%d")} before:{end_date.strftime("%Y/%m/%d")}'
-
-  try:
-    # Retrieve email list matching the search query
-    results = service.users().messages().list(userId='me', q=query).execute()
-    messages = results.get('messages', [])
-
-    # Extract relevant data from each message
-    emails = []
-    for msg in messages:
-      # Use message id to get full details of each email (optional)
-      # email_data = service.users().messages().get(userId='me', id=msg['id']).execute()
-      emails.append({'id': msg['id']})  # Currently, only storing message ID
-
-    return emails
-
-  except Exception as e:
-    print(f"An error occurred: {e}")
-    return []
+    service = build('gmail', 'v1', credentials=creds)
+    return service
 
