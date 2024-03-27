@@ -2,6 +2,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 import os, pickle
+import base64
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
@@ -49,12 +50,32 @@ def get_message(service, id):
         .get(
             userId="me",
             id=id,
-            format="metadata",
             metadataHeaders=["Subject"],
         )
         .execute()
     )
-    return msg
+    payload = msg.get("payload", {})
+    headers = payload.get("headers", [])
+    subject = next(
+        (header["value"] for header in headers if header["name"] == "Subject"),
+        "No Subject",
+    )
+    text = get_message_text(msg)
+    return {"msg": msg, "subject": subject, "text": text}
+
+
+def get_message_text(message):
+    payload = message.get("payload", {})
+    parts = payload.get("parts", [])
+    text = ""
+    for part in parts:
+        data = part["body"]["data"]
+        data_decoded = base64.urlsafe_b64decode(data.encode("ASCII")).decode("utf-8")
+        # print(part["mimeType"])
+        # print(data_decoded[:100])
+        if part["mimeType"] == "text/plain":
+            text += data_decoded
+    return text
 
 
 def get_labels():

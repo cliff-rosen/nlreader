@@ -1,4 +1,10 @@
-from gmail_api import get_service, get_labels, get_messages, get_message
+from gmail_api import (
+    get_service,
+    get_labels,
+    get_messages,
+    get_message,
+    get_message_text,
+)
 
 
 def main():
@@ -7,19 +13,15 @@ def main():
     start_date = "2024/03/25"
     end_date = "2024/03/26"
     messages = get_messages(service, label, start_date, end_date)
+    messages = messages[:1]
 
     if not messages:
         print("No messages found.")
 
-    for message in messages:
-        msg = get_message(service, message["id"])
-        headers = msg.get("payload", {}).get("headers", [])
-        print(headers)
-        subject = next(
-            (header["value"] for header in headers if header["name"] == "Subject"),
-            "No Subject",
-        )
-        print(f"Message ID: {message['id']}, Subject: {subject}")
+    for message_part in messages:
+        message = get_message(service, message_part["id"])
+        print(f"Message ID: {message['msg']['id']}, Subject: {message['subject']}")
+        print(message["text"])
 
 
 main()
