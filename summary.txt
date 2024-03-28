@@ -1,0 +1,13 @@
+- Anthropic released Claude 3, surpassing both GPT-4 and Gemini Ultra across benchmarks, claiming near-human capabilities in some cases.
+- U.S. Army Research Lab is testing commercial AI chatbots like GPT-4 as battlefield planning assistants in war game simulations.
+- Stability AI partnered with Tripo AI to release TripoSR, a model that generates high-quality 3D objects from a single image.
+- Anthropic's Claude 3 sets new industry benchmarks across a range of cognitive tasks, approaching 'near-human' capability.
+- Madonna uses AI text-to-video technology from Runway for visual effects in her Celebration Tour.
+- Researchers at UPMC and the University of Pittsburgh developed a smartphone app using AI to accurately diagnose ear infections in children.
+- Anthropic trained three new models in the Claude 3 family, with the top-tier ‘Opus’ version outperforming GPT-4 and Gemini Ultra across major benchmarks.
+- Apple announced next-generation M3 MacBook Airs in 13-inch and 15-inch sizes with upgraded features including M3 chips and the ability to connect to two displays at once.
+- Anthropic's Claude 3 apparently sets new industry benchmarks across a range of cognitive tasks, claiming it approaches 'near-human' capability in some cases.
+- Blue Origin's new chief executive Dave Limp is working to instill a more productive culture at the firm and plans to launch its own heavy-lift rocket later this year.
+- Amazon Web Services purchased a data center campus powered by a nearby nuclear power station in Pennsylvania for $650 million.
+- Alphabet co-founder Sergey Brin, who came out of retirement to work on AI, spoke about AI's impact on search and how Google might maintain its leadership position as AI continues to grow.
+- Anthropic's Claude 3 sets new industry benchmarks across a wide range of tasks, including expert knowledge, reasoning, coding, and mathematics, claiming new vision capabilities on par with leading models like GPT-4V.
