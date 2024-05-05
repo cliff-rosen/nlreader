@@ -4,6 +4,7 @@ from flask_restful import Resource, Api, reqparse, abort
 from flask_cors import CORS
 from api import search, hello
 from datetime import datetime
+from utils import gmail_api
 
 PORT = 5001
 
@@ -14,6 +15,11 @@ CORS(application)
 
 parser = reqparse.RequestParser()
 parser.add_argument("domain_id", type=int)
+
+
+class Login(Resource):
+    def get(self):
+        return gmail_api.login()
 
 
 class Hello(Resource):
@@ -40,6 +46,7 @@ class Search(Resource):
 
 api = Api(application)
 api.add_resource(Hello, "/hello")
+api.add_resource(Login, "/login")
 api.add_resource(Search, "/search")
 
 if __name__ == "__main__":

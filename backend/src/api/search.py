@@ -1,4 +1,4 @@
-from common import db
+from utils import db
 
 
 def get_articles(batch, start_date, end_date, poi, doi, min_score, max_score):
