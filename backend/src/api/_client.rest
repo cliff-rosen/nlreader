@@ -3,7 +3,11 @@ accept: application/json
 
 ###
 
-GET http://127.0.0.1:5001/login
+GET http://127.0.0.1:5001/get_auth_url
+accept: application/json
+###
+
+GET http://127.0.0.1:5001/get_token_from_auth_code
 accept: application/json
 ###
 

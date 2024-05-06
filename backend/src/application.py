@@ -17,9 +17,14 @@ parser = reqparse.RequestParser()
 parser.add_argument("domain_id", type=int)
 
 
-class Login(Resource):
+class GetAuthUrl(Resource):
     def get(self):
-        return gmail_api.login()
+        return {"url": gmail_api.get_auth_url()}
+
+
+class GetTokenFromAuthCode(Resource):
+    def get(self):
+        return "done"
 
 
 class Hello(Resource):
@@ -46,7 +51,8 @@ class Search(Resource):
 
 api = Api(application)
 api.add_resource(Hello, "/hello")
-api.add_resource(Login, "/login")
+api.add_resource(GetAuthUrl, "/get_auth_url")
+api.add_resource(GetTokenFromAuthCode, "/get_token_from_auth_code")
 api.add_resource(Search, "/search")
 
 if __name__ == "__main__":

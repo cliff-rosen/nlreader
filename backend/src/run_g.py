@@ -1,20 +1,17 @@
 # server.py
 from flask import url_for
-from google_auth_oauthlib.flow import Flow
+from google_auth_oauthlib.flow import InstalledAppFlow
 import google.oauth2.credentials
-import google_auth_oauthlib.flow
 import os
 
 
 # Google OAuth 2.0 credentials
-CLIENT_SECRETS_FILE = "secrets\client_secret_604005571-hu893qnfe3nns3rj4uvc4a0clgji88da.apps.googleusercontent.com.json"
+CREDENTIALS_FILE = "C:\\code\\nlreader\\backend\\src\\secrets\\client_secret_604005571-hu893qnfe3nns3rj4uvc4a0clgji88da.apps.googleusercontent.com.json"
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
 
 def login():
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        CLIENT_SECRETS_FILE, scopes=SCOPES
-    )
+    flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, scopes=SCOPES)
     # flow.redirect_uri = url_for("google_auth_callback", _external=True)
     flow.redirect_uri = "https://localhost"
     authorization_url, state = flow.authorization_url(
@@ -47,4 +44,10 @@ def credentials_to_dict(credentials):
     }
 
 
-print(login())
+ flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, scopes=SCOPES)
+flow.redirect_uri = "http://localhost"
+authorization_code = (
+    "4/0AdLIrYceZslN4Rupt-sv9r6ivFFWH4C4w7woc8zHQ00uKZOz083OrasD49_gZF8mgQ5woA"
+)
+creds = flow.fetch_token(code=authorization_code)
+print(creds)

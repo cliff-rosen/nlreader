@@ -6,21 +6,25 @@ import base64
 from flask import session, redirect, url_for
 
 # If modifying these scopes, delete the file token.pickle.
-SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+SCOPES = ["https://www.googleapis.com/auth/gmail.readonly", "openid"]
 CREDENTIALS_FILE = "C:\\code\\nlreader\\backend\\src\\secrets\\client_secret_604005571-hu893qnfe3nns3rj4uvc4a0clgji88da.apps.googleusercontent.com.json"
 
 
-def login():
+def get_auth_url():
     flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, scopes=SCOPES)
     # flow.redirect_uri = url_for("google_auth_callback", _external=True)
-    flow.redirect_uri = "https://localhost"
+    flow.redirect_uri = "https://localhost/get_token_from_auth_code"
     authorization_url, state = flow.authorization_url(
         access_type="offline", include_granted_scopes="true"
     )
     # session["oauth_state"] = state
     print("---------------------------------")
     print(authorization_url)
-    return redirect(authorization_url)
+    return authorization_url
+
+
+def get_token_from_auth_code(auth_code):
+    return 0
 
 
 def get_service():
