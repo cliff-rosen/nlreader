@@ -7,7 +7,7 @@ GET http://127.0.0.1:5001/get_auth_url
 accept: application/json
 ###
 
-GET http://127.0.0.1:5001/get_token_from_auth_code
+GET http://127.0.0.1:5001/get_token_from_auth_code?code=4/0AdLIrYeG_hvC8hP3Szh79E8x_FTpew3uKO2wvctlUcVJpke58IcarBLLhJ9W6cQAg-dThA
 accept: application/json
 ###
 

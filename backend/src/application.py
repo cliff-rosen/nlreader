@@ -24,7 +24,10 @@ class GetAuthUrl(Resource):
 
 class GetTokenFromAuthCode(Resource):
     def get(self):
-        return "done"
+        auth_code = request.args.get("code")
+        print("auth_code:", auth_code)
+        token = gmail_api.get_token_from_auth_code(auth_code)
+        return token
 
 
 class Hello(Resource):
