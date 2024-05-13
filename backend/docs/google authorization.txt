@@ -2,12 +2,14 @@ Google Authorization
 
 BASIC FLOW
 
-1. React calls Flask to retrieve authorization URL
+1. React embeds authorization URL in a link
 2. User clicks authorization URL and completes flow
-3. Browser is redirected to auth callback, which converts code to creds
-4. Creds are encoded in JWT and returned to browser
-5. Browser stores JWT in local storage and subsequent API calls put JWT in Bearer
-
+3. Browser is redirected to auth callback (react) with auth code
+4. Auth callback bookmarks current route and sends auth code to Flask, which:
+- exchanges auth code for google access token
+- encodes google access token in its own JWT
+- returns JWT to browser
+5. Auth callback stores JWT in local storage and renavigates to bookmarked route
 
 API CALLS FROM Browser
 
