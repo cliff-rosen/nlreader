@@ -1,41 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { useGoogleLogin } from '@react-oauth/google';
 
 function App() {
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    fetch('/api/messages')
-      .then(response => response.json())
-      .then(data => setMessages(data))
-      .catch(error => console.error('Error fetching messages:', error));
-  }, []);
-
-  const handleLogin = () => {
-    window.location.href = '/login';
-  };
-
-  const handleLogout = () => {
-    fetch('/logout', { method: 'POST' })
-      .then(() => window.location.reload())
-      .catch(error => console.error('Error logging out:', error));
-  };
+  const login = useGoogleLogin({
+    onSuccess: tokenResponse => console.log(tokenResponse),
+    flow: 'auth-code',
+  });
 
   return (
     <div className="App">
-      <h1>Recent Gmail Messages</h1>
-      {messages.length > 0 ? (
-        <ul>
-          {messages.map((message, index) => (
-            <li key={index}>{message.snippet}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No messages found. Please <button onClick={handleLogin}>log in</button> to view your messages.</p>
-      )}
-      <button onClick={handleLogout}>Log out</button>
+      <h1>Hello</h1>
+      <button onClick={() => login()}>Sign in with Google 🚀</button>;
     </div>
+
   );
 }
+
+{/* <GoogleOAuthProvider clientId={REACT_APP_GOOGLE_CLIENT_ID}>
+  <div>
+    <h2>Social Login</h2>
+    <GoogleLogin
+      onSuccess={handleGoogleSuccess}
+      onFailure={handleGoogleFailure}
+      cookiePolicy={'single_host_origin'}
+      scope="https://www.googleapis.com/auth/gmail.readonly"
+      useOneTap
+    />
+    {error && <p>{error}</p>}
+  </div>
+</GoogleOAuthProvider> */}
+
 
 export default App;

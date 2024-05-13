@@ -1,13 +1,16 @@
+POST http://127.0.0.1:5001/hello
+accept: application/json
+###
+
 GET http://127.0.0.1:5001/hello
 accept: application/json
-
 ###
 
 GET http://127.0.0.1:5001/get_auth_url
 accept: application/json
 ###
 
-GET http://127.0.0.1:5001/get_token_from_auth_code?code=4/0AdLIrYeG_hvC8hP3Szh79E8x_FTpew3uKO2wvctlUcVJpke58IcarBLLhJ9W6cQAg-dThA
+GET http://127.0.0.1:5001/auth_callback?code=ya29.a0AXooCgsa3Afl_9JRwU8JHB6dwFQ9RLfjlqxau4qiQGRFMd18w2hDi7rAhkBmDx7Dw4OfSvsDdCTFYywCkK3k0cDxDjW9le5NJ7rYiEsiKgfruMWN6-2AYImBWNk0zBB8cG1irYxW53Jrt5ZEyAWmuI3O5Xd1Yl0n6GL7aCgYKAXoSARASFQHGX2MiMayQ6GNle4CCZ9q8ySd_3g0171
 accept: application/json
 ###
 

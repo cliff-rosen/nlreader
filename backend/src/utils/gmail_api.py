@@ -8,16 +8,36 @@ from flask import session, redirect, url_for
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = [
     "openid",
-    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/gmail.readonly",
 ]
-CREDENTIALS_FILE = "C:\\code\\nlreader\\backend\\src\\secrets\\client_secret_604005571-hu893qnfe3nns3rj4uvc4a0clgji88da.apps.googleusercontent.com.json"
+# CREDENTIALS_FILE = "C:\\code\\nlreader\\backend\\src\\secrets\\client_secret_604005571-hu893qnfe3nns3rj4uvc4a0clgji88da.apps.googleusercontent.com.json"
+CLIENT_SECRETS_FILE = "C:\\code\\nlreader\\backend\\src\\secrets\\client_secret_604005571-miie2779t7p81l65up26sb6dih1q7uoe.apps.googleusercontent.com.json"
+REDIRECT_URI = "http://localhost:5001/auth_callback"
+
+
+def test():
+    creds = {}
+    service = build("gmail", "v1", credentials=creds)
+    return service
+
+
+def credentials_to_dict(credentials):
+    return {
+        "token": credentials.token,
+        "refresh_token": credentials.refresh_token,
+        "token_uri": credentials.token_uri,
+        "client_id": credentials.client_id,
+        "client_secret": credentials.client_secret,
+        "scopes": credentials.scopes,
+    }
 
 
 def get_auth_url():
-    flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, scopes=SCOPES)
+    flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES)
     # flow.redirect_uri = url_for("google_auth_callback", _external=True)
-    flow.redirect_uri = "http://localhost:5001/get_token_from_auth_code"
+    flow.redirect_uri = REDIRECT_URI
     authorization_url, state = flow.authorization_url(
         access_type="offline", include_granted_scopes="true"
     )
@@ -28,12 +48,16 @@ def get_auth_url():
 
 
 def get_token_from_auth_code(auth_code):
-    flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, scopes=SCOPES)
+    print("get_token_from_auth_code")
+    flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES)
     # flow.redirect_uri = url_for("get_token_from_auth_code", _external=True)
-    flow.redirect_uri = "http://localhost:5001/get_token_from_auth_code"
+    flow.redirect_uri = REDIRECT_URI
 
     try:
         token_response = flow.fetch_token(code=auth_code)
+        credentials = flow.credentials
+        credentials_dict = credentials_to_dict(credentials)
+        print(credentials_to_dict)
     except Exception as e:
         raise Exception(f"Failed to fetch access token: {e}")
 
@@ -48,12 +72,15 @@ def get_service():
     if os.path.exists("secrets/token.pickle"):
         with open("secrets/token.pickle", "rb") as token:
             creds = pickle.load(token)
+        print(vars(creds))
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(
+                CLIENT_SECRETS_FILE, SCOPES
+            )
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open("secrets/token.pickle", "wb") as token:

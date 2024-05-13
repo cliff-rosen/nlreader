@@ -13,9 +13,6 @@ CORS(application)
 
 # logger.info('Initializing application...')
 
-parser = reqparse.RequestParser()
-parser.add_argument("domain_id", type=int)
-
 
 class GetAuthUrl(Resource):
     def get(self):
@@ -29,9 +26,20 @@ class GetTokenFromAuthCode(Resource):
         token = gmail_api.get_token_from_auth_code(auth_code)
         return token
 
+    def post(self):
+        auth_code = request.form.get("code")
+        print("auth_code:", auth_code)
+        token = {}
+        if auth_code:
+            token = gmail_api.get_token_from_auth_code(auth_code)
+        return token
+
 
 class Hello(Resource):
     def get(self):
+        return hello.get_hello()
+
+    def post(self):
         return hello.get_hello()
 
 
@@ -55,7 +63,7 @@ class Search(Resource):
 api = Api(application)
 api.add_resource(Hello, "/hello")
 api.add_resource(GetAuthUrl, "/get_auth_url")
-api.add_resource(GetTokenFromAuthCode, "/get_token_from_auth_code")
+api.add_resource(GetTokenFromAuthCode, "/auth_callback")
 api.add_resource(Search, "/search")
 
 if __name__ == "__main__":

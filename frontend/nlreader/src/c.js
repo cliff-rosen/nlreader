@@ -24,7 +24,7 @@ function App() {
 
     return (
         <div className="App">
-            <h1>Recent Gmail Messages</h1>
+            <h1>Recent xGmail Messages</h1>
             {messages.length > 0 ? (
                 <ul>
                     {messages.map((message, index) => (

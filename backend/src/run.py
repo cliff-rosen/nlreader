@@ -6,6 +6,7 @@ from utils.gmail_api import (
     get_message,
     get_message_text,
 )
+from utils import gmail_api
 
 DELIM = "=================================================================\n"
 INSTRUCTION = "Read all stories from the text in the following collection of newsletter emails. Ignore all links.  Then generate a summary in the form of bullets for all key stories, one bullet per key story. If the same story or story theme appears several times consolidate all relevant info in a single bullet:\n\n"
@@ -57,4 +58,10 @@ def main():
     print("done")
 
 
-main()
+service = get_service()
+if 1:
+    label = "Label_2689345936544895630"
+    start_date = "2024/04/15"
+    end_date = "2024/04/22"
+    messages = get_messages(service, label, start_date, end_date)
+    print(messages)
