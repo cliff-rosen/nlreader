@@ -1,4 +1,4 @@
-import time
+import os, time
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse, abort
 from flask_cors import CORS
@@ -35,6 +35,13 @@ class GetTokenFromAuthCode(Resource):
         return token
 
 
+class Labels(Resource):
+    def get(self):
+        labels = gmail_api.get_labels()
+        print("labels", labels)
+        return labels
+
+
 class Hello(Resource):
     def get(self):
         return hello.get_hello()
@@ -65,6 +72,7 @@ api.add_resource(Hello, "/hello")
 api.add_resource(GetAuthUrl, "/get_auth_url")
 api.add_resource(GetTokenFromAuthCode, "/auth_callback")
 api.add_resource(Search, "/search")
+api.add_resource(Labels, "/labels")
 
 if __name__ == "__main__":
     application.run(port=PORT, debug=True)

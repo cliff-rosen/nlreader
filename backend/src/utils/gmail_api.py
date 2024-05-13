@@ -56,8 +56,10 @@ def get_token_from_auth_code(auth_code):
     try:
         token_response = flow.fetch_token(code=auth_code)
         credentials = flow.credentials
-        credentials_dict = credentials_to_dict(credentials)
-        print(credentials_to_dict)
+        with open("secrets/token.pickle", "wb") as token:
+            pickle.dump(credentials, token)
+        # credentials_dict = credentials_to_dict(credentials)
+        # print(credentials_dict)
     except Exception as e:
         raise Exception(f"Failed to fetch access token: {e}")
 
