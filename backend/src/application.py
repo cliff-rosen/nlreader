@@ -70,7 +70,7 @@ class Search(Resource):
 api = Api(application)
 api.add_resource(Hello, "/hello")
 api.add_resource(GetAuthUrl, "/get_auth_url")
-api.add_resource(GetTokenFromAuthCode, "/auth_callback")
+api.add_resource(GetTokenFromAuthCode, "/get_token_from_auth_code")
 api.add_resource(Search, "/search")
 api.add_resource(Labels, "/labels")
 

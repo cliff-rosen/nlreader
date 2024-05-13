@@ -1,0 +1,18 @@
+Google Authorization
+
+BASIC FLOW
+
+1. React calls Flask to retrieve authorization URL
+2. User clicks authorization URL and completes flow
+3. Browser is redirected to auth callback, which converts code to creds
+4. Creds are encoded in JWT and returned to browser
+5. Browser stores JWT in local storage and subsequent API calls put JWT in Bearer
+
+
+API CALLS FROM Browser
+
+1. Browser retrieves JWT from local storage
+2. JWT is sent as Bearer to Flask
+3. Flask decodes the JWT to creds
+4. If creds valid, Flask builds service with creds and makes API call
+If creds needs refresh, Flask uses refresh token to update creds and then makes API call
