@@ -35,7 +35,8 @@ class GetTokenFromAuthCode(Resource):
             "sub": sub,
         }
         print(ret_obj)
-        return ret_obj
+        ret_obj_jwt = utils.make_jwt(ret_obj)
+        return ret_obj_jwt
 
     def post(self):
         auth_code = request.form.get("code")

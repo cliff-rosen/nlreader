@@ -1,12 +1,13 @@
 import pymysql.cursors
 import json
 
-# import logging
+# from utils import logging
+import logging
 import local_secrets as secrets
 
 DB_SECRETS = secrets.DB_SECRETS
 
-# logger = logging.getLogger()
+logger = logging.getLogger()
 
 
 ##### CONNECTIONS #####
@@ -31,279 +32,140 @@ def l_to_d(keys, values):
     return dict(zip(keys, values))
 
 
-##### ARTICLES #####
+##### USER #####
 
 
-def get_articles_by_batch(batch):
-    conn = get_connection()
-    cur = conn.cursor()
-    query_text = f"""
-        SELECT *
-        FROM articles
-        WHERE batch = {batch}
-        ORDER BY score desc
-        LIMIT 20
-        """
-    cur.execute(query_text)
-    rows = cur.fetchall()
-    close_connection(conn)
-    return rows
-
-
-def get_articles_filter(
-    batch, start_date, end_date, poi_rel="", doi_rel="", min_score=0, max_score=10
-):
-    conn = get_connection()
-    cur = conn.cursor()
-    query_text = f"""
-        SELECT *
-        FROM articles
-        WHERE comp_date >= '{start_date}'
-            AND comp_date <= '{end_date}'
-            AND batch = {batch}
-            AND score >= {min_score}
-            AND score <= {max_score}
-        """
-    if poi_rel in ["yes", "no"]:
-        query_text += ' AND poi = "' + poi_rel + '"'
-    if doi_rel in ["yes", "no"]:
-        query_text += ' AND doi = "' + doi_rel + '"'
-    query_text += " ORDER BY score desc"
-    # query_text += ' LIMIT 50'
-    print(query_text)
-    cur.execute(query_text)
-    rows = cur.fetchall()
-    close_connection(conn)
-    return rows
-
-
-def get_articles_by_date(start_date, end_date, batch=1):
-    conn = get_connection()
-    cur = conn.cursor()
-    query_text = f"""
-        SELECT *
-        FROM articles
-        WHERE comp_date >= '{start_date}'
-            AND comp_date <= '{end_date}'
-            AND batch = {batch}
-        ORDER BY score desc
-        LIMIT 20
-        """
-    print(query_text)
-    cur.execute(query_text)
-    rows = cur.fetchall()
-    close_connection(conn)
-    return rows
-
-
-def get_articles(PoI, DoI):
-    conn = get_connection()
-    cur = conn.cursor()
-    query_text = """
-        SELECT *
-        FROM articles
-        """
-    cur.execute(query_text)
-    rows = cur.fetchall()
-    close_connection(conn)
-    return rows
-
-
-def insert_articles(
-    pmid,
-    title,
-    abstract,
-    comp_date,
-    year,
-    authors,
-    journal,
-    volume,
-    issue,
-    medium,
-    pages,
-    batch=0,
-):
+def insert_user(user_email, user_id_google, user_first_name, user_last_name):
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
-            query = """
-                INSERT INTO articles (pmid, title, abstract, comp_date, year, authors, journal, volume, issue, medium, pages)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            res = cursor.execute(
                 """
-            record = (
-                pmid,
-                title,
-                abstract,
-                comp_date,
-                year,
-                authors,
-                journal,
-                volume,
-                issue,
-                medium,
-                pages,
-                batch,
+                    INSERT INTO user (user_email, user_id_google, user_first_name, user_last_name) 
+                    VALUES (%s, %s, %s, %s)
+                """,
+                (user_email, user_id_google, user_first_name, user_last_name),
             )
-            res = cursor.execute(query, record)
             conn.commit()
+            user_id = cursor.lastrowid
     except Exception as e:
         print("***************************")
-        print("DB error in insert:\n", str(e))
+        print(user_email)
+        print("DB error in insert_user:\n", str(e))
         raise
+    return user_id
 
-    return res
+
+def get_user_by_google_user_id(user_id_google):
+    query_string = """
+                    SELECT *
+                    FROM user
+                    WHERE user_id_google = %s
+                """
+    try:
+        print("getting connection")
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(query_string, (user_id_google,))
+        rows = cur.fetchall()
+    except Exception as e:
+        print("db.get_user ERROR:", e)
+        return {"result": "DB_CONNECTION_ERROR"}
+    close_connection(conn)
+    if len(rows) == 0:
+        return {"result": "USER_NOT_FOUND"}
+    if len(rows) == 2:
+        return {"result": "TOO_MANY_ROWS"}
+    rows[0]["result"] = "SUCCESS"
+    return rows[0]
 
 
-# articles is list of Article objects
-def insert_articles_bulk(articles, batch=0):
+def validate_user(user_name, password):
+    query_string = """
+                    SELECT user_id, user_name, password,
+                        user_description, domain_id
+                    FROM user
+                    WHERE user_name = %s
+                """
+    try:
+        print("getting connection")
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(query_string, (user_name,))
+        rows = cur.fetchall()
+    except Exception as e:
+        return {"error": "DB_CONNECTION_ERROR"}
+    close_connection(conn)
+
+    if len(rows) == 0:
+        return {"error": "USER_NOT_FOUND"}
+    elif len(rows) > 1:
+        return {"error": "DB_ERROR"}
+    elif rows[0]["password"] != password:
+        return {"error": "INVALID_PASSWORD"}
+    user = rows[0]
+    del user["password"]
+    return user
+
+
+##### DOCUMENT PIPELINE #####
+
+
+def delete_document(doc_id):
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
-            query = """
-                INSERT INTO articles (pmid, title, abstract, comp_date, year, authors, journal, volume, issue, medium, pages, batch)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """
-            records = [
-                (
-                    article.PMID,
-                    article.title,
-                    article.abstract,
-                    article.comp_date,
-                    article.year,
-                    article.authors,
-                    article.journal,
-                    article.volume,
-                    article.issue,
-                    article.medium,
-                    article.pages,
-                    batch,
-                )
-                for article in articles
-            ]
-            res = cursor.executemany(query, records)
+            sql = f"DELETE FROM document_chunk WHERE doc_id = %s"
+            res = cursor.execute(sql, (doc_id,))
+            sql = f"DELETE FROM document WHERE doc_id = %s"
+            res = cursor.execute(sql, (doc_id,))
             conn.commit()
-    except Exception as e:
-        print("***************************")
-        print("DB error in insert:\n", str(e))
+    except pymysql.Error as e:
+        print(f"Error deleting row: {e}")
         raise
-
     return res
 
 
-def update_articles_main(
-    pmid,
-    title,
-    abstract,
-    comp_date,
-    year,
-    authors,
-    journal,
-    volume,
-    issue,
-    medium,
-    pages,
-):
-    try:
-        conn = get_connection()
-        with conn.cursor() as cursor:
-            query = """
-                UPDATE articles
-                SET title = %s, abstract = %s, comp_date = %s, year = %s, authors = %s, 
-                    journal = %s, volume = %s, issue = %s, medium = %s, pages = %s
-                WHERE pmid = %s
-                """
-            record = (
-                title,
-                abstract,
-                comp_date,
-                year,
-                authors,
-                journal,
-                volume,
-                issue,
-                medium,
-                pages,
-                pmid,
-            )
-            res = cursor.execute(query, record)
-            conn.commit()
-    except Exception as e:
-        print("***************************")
-        print("DB error in update:\n", str(e))
-        raise
-
+def get_all_docs_from_domain(conn, domain_id):
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT doc_id, domain_id, doc_uri, doc_title, doc_text FROM document WHERE domain_id = %s",
+        (domain_id,),
+    )
+    rows = cur.fetchall()
+    res = [
+        (
+            row["doc_id"],
+            row["domain_id"],
+            row["doc_uri"],
+            row["doc_title"],
+            row["doc_text"],
+        )
+        for row in rows
+    ]
     return res
 
 
-# articles is list of Article dicts
-def update_articles_features(articles):
-    try:
-        conn = get_connection()
-        with conn.cursor() as cursor:
-            query = """
-                UPDATE articles
-                SET poi = %s, doi = %s, is_systematic = %s,
-                    study_type = %s, study_outcome = %s, poi_list = %s, doi_list = %s
-                WHERE pmid = %s
-                """
-            record = [
-                (
-                    article["poi"],
-                    article["doi"],
-                    article["is_systematic"],
-                    article["study_type"],
-                    article["study_outcome"],
-                    article["poi_list"],
-                    article["doi_list"],
-                    article["PMID"],
-                )
-                for article in articles
-            ]
-            res = cursor.executemany(query, record)
-            conn.commit()
-    except Exception as e:
-        print("***************************")
-        print("DB error in update\n", str(e))
-        raise
-
-    return res
+def insert_document_chunk(doc_id, chunk_text, chunk_embedding):
+    json_data = json.dumps(chunk_embedding)
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO document_chunk (doc_id, chunk_text, chunk_embedding) VALUES (%s, %s, %s)",
+        (doc_id, chunk_text, json_data),
+    )
+    conn.commit()
+    return cur.lastrowid
 
 
-def update_articles_summaries(articles):
-    try:
-        conn = get_connection()
-        with conn.cursor() as cursor:
-            query = """
-                UPDATE articles
-                SET summary = %s
-                WHERE pmid = %s
-                """
-            records = [(article["summary"], article["pmid"]) for article in articles]
-            res = cursor.executemany(query, records)
-            conn.commit()
-    except Exception as e:
-        print("***************************")
-        print("DB error in update\n", str(e))
-        raise
-
-    return res
-
-
-def update_articles_scores(articles):
-    try:
-        conn = get_connection()
-        with conn.cursor() as cursor:
-            query = """
-                UPDATE articles
-                SET score = %s
-                WHERE pmid = %s
-                """
-            records = [(article["score"], article["pmid"]) for article in articles]
-            res = cursor.executemany(query, records)
-            conn.commit()
-    except Exception as e:
-        print("***************************")
-        print("DB error in update\n", str(e))
-        raise
-
-    return res
+def update_document_chunk_embedding(conn, doc_chunk_id, embedding):
+    json_data = json.dumps(embedding)
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE document_chunk SET chunk_embedding = %s WHERE doc_chunk_id = %s",
+        (
+            json_data,
+            doc_chunk_id,
+        ),
+    )
+    conn.commit()

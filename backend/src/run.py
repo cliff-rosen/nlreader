@@ -6,9 +6,8 @@ from utils.gmail_api import (
     get_message,
     get_message_text,
 )
-from utils import gmail_api
-from jwt import JWT
-
+from utils import gmail_api, utils
+from utils import db
 
 DELIM = "=================================================================\n"
 INSTRUCTION = "Read all stories from the text in the following collection of newsletter emails. Ignore all links.  Then generate a summary in the form of bullets for all key stories, one bullet per key story. If the same story or story theme appears several times consolidate all relevant info in a single bullet:\n\n"
@@ -70,7 +69,14 @@ if 1:
     print(messages)
 """
 
-jwt = JWT()
-g_jwt = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImEzYjc2MmY4NzFjZGIzYmFlMDA0NGM2NDk2MjJmYzEzOTZlZGEzZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI2MDQwMDU1NzEtbWlpZTI3Nzl0N3A4MWw2NXVwMjZzYjZkaWgxcTd1b2UuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI2MDQwMDU1NzEtbWlpZTI3Nzl0N3A4MWw2NXVwMjZzYjZkaWgxcTd1b2UuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDg5NDA4NTU1NDg2MTU2NDgxOTIiLCJlbWFpbCI6ImNsaWZmLnJvc2VuQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiN1NSbnFDWU95SFZ2M3k1TmtSa1pRUSIsIm5hbWUiOiJDbGlmZiBSb3NlbiIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NJSnBLd0o2RlA1WkJzODFfMXhzY0licXFxZUR1b2swbXJGQjl3UWpnY0lRbWNjPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6IkNsaWZmIiwiZmFtaWx5X25hbWUiOiJSb3NlbiIsImlhdCI6MTcxNTYyMzM1NSwiZXhwIjoxNzE1NjI2OTU1fQ.cvRhlfRa4PQzhbrosGMbHdEM7Z4PQbo9_YZVg0b_B1_CIaRwAIF-cl1NqX1fnOVOqRg6qSs2_0Fvk5q2BZaEbVXz0l1WgWeoFDIzJZ6s1LjDpvMe_z827bM8TNtSnLrkEk9vIptETZCx8wSmXTRJdb-wRtiNJO0JUaXDupxR_mBdXm6Ps8zIthD7cSiEErhISqtJsA3eIsVQ_IgYXSDElZflGBkh9mGSmQYJ-X1unobCC-yeaIdD5VkmPrM1slSu4bRjkha4wKk0t25SqtjCnAFkEfzW0z4e83HBOLVLhunODZ3ZZtVNIaz5bVu05FaYlSyIFVVd4LBR0WaGaGEk2g"
-g_token = jwt.decode(g_jwt, do_verify=False)
-print(g_token)
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQVhvb0NndDJpaFpWcS1iV3BaLWZHYXlEM1dFRGFYTXVDcGVHRlVhVHpxYk55aHVmeEgzdGRrV2pjQzhWaUJ4aUJ1TXEwVW9iRm1oV18xa2VyWTBHRUVvdXVkUnNaenJVTTJfeWpNTVN6T1lBWWJTQXZrZkdzMEdBWUhTOFBrM3JZeWs4OWhxTUlfN05rUG9Sa3YweGJUbGMybTNaVHp0bEc4T3hhQ2dZS0FWZ1NBUkFTRlFIR1gyTWlCd1U3LVNOb1F2VVZGUkpZNUtFV0p3MDE3MSIsInJlZnJlc2hfdG9rZW4iOiIxLy8wNHNMVHpyd2psdVVWQ2dZSUFSQUFHQVFTTmdGLUw5SXJlWndweWkxM3J5cWUtbERMNkJ1UVg5RnA5Ui1wSUJfb19SUExGLXVJZ2VGQTNHNndteHNUbE9udER2U2ZSRjJzUXciLCJzdWIiOiIxMDg5NDA4NTU1NDg2MTU2NDgxOTIifQ.dxxpKK_k4YnVLw46pULJBCsD96J3E7oL8jtOhZFZduU"
+token_obj = utils.decode_google_jwt(token)
+# print(token_obj)
+
+user_email = "cliff@abc.com"
+user_id_google = "google_12345"
+user_first_name = "Cliff"
+user_last_name = "Rosen"
+
+user_id = db.insert_user(user_email, user_id_google, user_first_name, user_last_name)
+print(user_id)

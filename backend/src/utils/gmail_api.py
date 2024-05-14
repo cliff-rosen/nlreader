@@ -64,7 +64,8 @@ def get_token_from_auth_code(auth_code):
 
     try:
         token_response = flow.fetch_token(code=auth_code)
-        # credentials = flow.credentials
+        credentials = flow.credentials
+        credentials_dict = credentials_to_dict(credentials)
         # with open("secrets/token.pickle", "wb") as token:
         #     pickle.dump(credentials, token)
     except Exception as e:
