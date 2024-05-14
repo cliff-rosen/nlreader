@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route } from "react-router-dom";
 import { useGoogleLogin } from '@react-oauth/google';
 import { config } from './conf';
+import { fetchGet } from './utils/APIUtils';
+import { GoogleLogin } from '@react-oauth/google';
 import Auth from './components/Auth';
 import './App.css';
 
@@ -18,15 +20,37 @@ function App() {
 }
 
 function Main() {
+
+  const onSuccess = tokenResponse => {
+    console.log(tokenResponse)
+    fetchGet(`login?token=${tokenResponse.credential}`)
+      .then(res => console.log('login result', res));
+  }
+
   const login = useGoogleLogin({
-    onSuccess: tokenResponse => console.log(tokenResponse),
-    // flow: 'auth-code',
+    onSuccess: tokenResponse => {
+      console.log(tokenResponse)
+      fetchGet(`login?token=${tokenResponse.credential}`)
+        .then(res => console.log('login result', res));
+    },
+    flow: 'auth-code',
   });
 
   return <div className="App">
     <h1>Hello</h1>
-    <button onClick={() => login()}>Sign in with Google 🚀</button>;
+    <button onClick={() => login()}>Sign in with Google 🚀</button>
     <br /><br />
+
+    <GoogleLogin
+      onSuccess={onSuccess}
+      onError={() => {
+        console.log('Login Failed');
+      }}
+      useOneTap
+    />;
+
+    <br /><br />
+
     <a href={config.url.GAUTH_URL} rel="noopener noreferrer">
       Authorize
     </a>

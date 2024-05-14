@@ -71,8 +71,9 @@ if 1:
 
 token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOiJ5YTI5LmEwQVhvb0NndDJpaFpWcS1iV3BaLWZHYXlEM1dFRGFYTXVDcGVHRlVhVHpxYk55aHVmeEgzdGRrV2pjQzhWaUJ4aUJ1TXEwVW9iRm1oV18xa2VyWTBHRUVvdXVkUnNaenJVTTJfeWpNTVN6T1lBWWJTQXZrZkdzMEdBWUhTOFBrM3JZeWs4OWhxTUlfN05rUG9Sa3YweGJUbGMybTNaVHp0bEc4T3hhQ2dZS0FWZ1NBUkFTRlFIR1gyTWlCd1U3LVNOb1F2VVZGUkpZNUtFV0p3MDE3MSIsInJlZnJlc2hfdG9rZW4iOiIxLy8wNHNMVHpyd2psdVVWQ2dZSUFSQUFHQVFTTmdGLUw5SXJlWndweWkxM3J5cWUtbERMNkJ1UVg5RnA5Ui1wSUJfb19SUExGLXVJZ2VGQTNHNndteHNUbE9udER2U2ZSRjJzUXciLCJzdWIiOiIxMDg5NDA4NTU1NDg2MTU2NDgxOTIifQ.dxxpKK_k4YnVLw46pULJBCsD96J3E7oL8jtOhZFZduU"
 token_obj = utils.decode_google_jwt(token)
-# print(token_obj)
+print(token_obj)
 
+"""
 user_email = "cliff@abc.com"
 user_id_google = "google_12345"
 user_first_name = "Cliff"
@@ -80,3 +81,7 @@ user_last_name = "Rosen"
 
 user_id = db.insert_user(user_email, user_id_google, user_first_name, user_last_name)
 print(user_id)
+
+user = db.get_user_by_google_user_id("google_112345")
+print(user)
+"""

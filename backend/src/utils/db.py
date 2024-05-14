@@ -35,16 +35,30 @@ def l_to_d(keys, values):
 ##### USER #####
 
 
-def insert_user(user_email, user_id_google, user_first_name, user_last_name):
+def insert_user(
+    user_email,
+    user_id_google,
+    user_first_name,
+    user_last_name,
+    access_token,
+    refresh_token,
+):
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
             res = cursor.execute(
                 """
-                    INSERT INTO user (user_email, user_id_google, user_first_name, user_last_name) 
-                    VALUES (%s, %s, %s, %s)
+                    INSERT INTO user (user_email, user_id_google, user_first_name, user_last_name, access_token, refresh_token) 
+                    VALUES (%s, %s, %s, %s, %s, %s)
                 """,
-                (user_email, user_id_google, user_first_name, user_last_name),
+                (
+                    user_email,
+                    user_id_google,
+                    user_first_name,
+                    user_last_name,
+                    access_token,
+                    refresh_token,
+                ),
             )
             conn.commit()
             user_id = cursor.lastrowid

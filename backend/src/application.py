@@ -2,10 +2,10 @@ import os, time
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse, abort
 from flask_cors import CORS
-from api import search, hello
+from api import auth, hello
 from datetime import datetime
 from utils import gmail_api
-from utils import utils
+from utils import utils, db
 
 PORT = 5001
 
@@ -13,6 +13,14 @@ application = Flask(__name__)
 CORS(application)
 
 # logger.info('Initializing application...')
+
+
+class Login(Resource):
+    def get(self):
+        token = request.args.get("token")
+        print("token:", token)
+        res = auth.login(token)
+        return res
 
 
 class GetAuthUrl(Resource):
@@ -29,14 +37,16 @@ class GetTokenFromAuthCode(Resource):
         sub = id_token["sub"]
         access_token = token["access_token"]
         refresh_token = token["refresh_token"]
-        ret_obj = {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "sub": sub,
-        }
-        print(ret_obj)
-        ret_obj_jwt = utils.make_jwt(ret_obj)
-        return ret_obj_jwt
+        user_id = db.insert_user(
+            id_token["email"],
+            sub,
+            id_token["given_name"],
+            id_token["family_name"],
+            access_token,
+            refresh_token,
+        )
+        print(user_id)
+        return {"user_id": user_id, "google_user_id": sub}
 
     def post(self):
         auth_code = request.form.get("code")
@@ -80,11 +90,13 @@ class Search(Resource):
 
 
 api = Api(application)
-api.add_resource(Hello, "/hello")
+
+api.add_resource(Login, "/login")
 api.add_resource(GetAuthUrl, "/get_auth_url")
 api.add_resource(GetTokenFromAuthCode, "/get_token_from_auth_code")
-api.add_resource(Search, "/search")
 api.add_resource(Labels, "/labels")
+api.add_resource(Hello, "/hello")
+api.add_resource(Search, "/search")
 
 if __name__ == "__main__":
     application.run(port=PORT, debug=True)
