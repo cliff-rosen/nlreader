@@ -40,17 +40,15 @@ function Main() {
     <h1>Hello</h1>
     <button onClick={() => login()}>Sign in with Google 🚀</button>
     <br /><br />
-
-    <GoogleLogin
-      onSuccess={onSuccess}
-      onError={() => {
-        console.log('Login Failed');
-      }}
-      useOneTap
-    />;
-
-    <br /><br />
-
+    <div style={{ "width": "200px", "margin": "auto" }}>
+      <GoogleLogin
+        onSuccess={onSuccess}
+        onError={() => {
+          console.log('Login Failed');
+        }}
+      />
+    </div>
+    <br />
     <a href={config.url.GAUTH_URL} rel="noopener noreferrer">
       Authorize
     </a>

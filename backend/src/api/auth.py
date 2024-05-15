@@ -7,7 +7,7 @@ def login(token):
     res = db.get_user_by_google_user_id(user["sub"])
     if res["result"] == "SUCCESS":
         print("user found in DB")
-        return {
+        user = {
             "user_id": res["user_id"],
             "user_id_google": res["user_id_google"],
             "user_email": res["user_email"],
@@ -16,6 +16,7 @@ def login(token):
             "access_token": res["access_token"],
             "refresh_token": res["refresh_token"],
         }
+        return {"user": user, "token": utils.make_jwt(user)}
 
     print("user not found in DB")
     user_id = db.insert_user(
@@ -27,7 +28,7 @@ def login(token):
         "",
     )
     print("user_id:", user_id)
-    return {
+    user = {
         "user_id": user_id,
         "user_id_google": user["sub"],
         "user_email": user["email"],
@@ -36,3 +37,4 @@ def login(token):
         "access_token": "",
         "refresh_token": "",
     }
+    return {"user": user, "token": utils.make_jwt(user)}
