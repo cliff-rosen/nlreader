@@ -1,16 +1,8 @@
+import { useState } from "react";
 import { fetchGet } from "./APIUtils";
 
-export const login = async (token) => {
-    const res = await fetchGet(`login?token=${token}`)
-    console.log('login result', res);
-    setUserInStorage(res)
-}
 
-export const setUserInStorage = (user) => {
-    localStorage.setItem("user", JSON.stringify(user));
-};
-
-export const getUserFromStorage = () => {
+const getUserFromStorage = () => {
     var userFromStorage;
 
     try {
@@ -21,4 +13,22 @@ export const getUserFromStorage = () => {
     return userFromStorage;
 };
 
+const setUserInStorage = (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+};
 
+
+export const useSessionManager = () => {
+    const [user, setUser] = useState(getUserFromStorage());
+
+    const login = async (token) => {
+        const res = await fetchGet(`login?token=${token}`)
+        console.log('login result', res);
+        setUser(res)
+        setUserInStorage(res)
+    }
+
+
+    return { user, login }
+
+}  

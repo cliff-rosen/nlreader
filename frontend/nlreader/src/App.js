@@ -1,30 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from "react-router-dom";
-import { useGoogleLogin } from '@react-oauth/google';
+
+import Nav from "./components/Nav";
+
 import { config } from './conf';
 import { fetchGet } from './utils/APIUtils';
 import { GoogleLogin } from '@react-oauth/google';
 import Auth from './components/Auth';
-import { login } from './utils/AuthUtils';
+import { useSessionManager } from './utils/AuthUtils';
 import './App.css';
 
+import { useGoogleLogin } from '@react-oauth/google';
+import { Layout, Divider } from 'antd';
+
+const { Header, Footer, Sider, Content } = Layout;
+
+const layoutStyle = {
+  maxWidth: '1200px',
+  margin: '0 auto',
+  padding: '0px',
+  backgroundColor: '#fff',
+}
+
+const contentStyle = {
+  padding: '0 48px',
+  backgroundColor: '#fff',
+};
+
 function App() {
+  const sessionManager = useSessionManager();
   const [messages, setMessages] = useState([]);
 
-  return (
+  console.log('sessionManager', sessionManager)
 
-    <Routes>
-      <Route path="/" element={<Main />} />
-      <Route path="/auth_callback" element={<Auth />} />
-    </Routes>
+  return (
+    <Layout style={layoutStyle}>
+      <Nav sessionManager={sessionManager} />
+      <Content style={contentStyle} >
+        <Divider />
+        <Routes>
+          <Route path="/" element={<Main sessionManager={sessionManager} />} />
+          <Route path="/auth_callback" element={<Auth />} />
+        </Routes>
+      </Content>
+    </Layout>
   );
 }
 
-function Main() {
+
+function Main({ sessionManager }) {
 
   const onSuccess = tokenResponse => {
     console.log(tokenResponse)
-    login(tokenResponse.credential)
+    sessionManager.login(tokenResponse.credential)
   }
 
   const glogin = useGoogleLogin({
