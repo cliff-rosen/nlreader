@@ -94,92 +94,22 @@ def get_user_by_google_user_id(user_id_google):
     return rows[0]
 
 
-def validate_user(user_name, password):
-    query_string = """
-                    SELECT user_id, user_name, password,
-                        user_description, domain_id
-                    FROM user
-                    WHERE user_name = %s
-                """
+def update_user_authorization(user_id_google, access_token, refresh_token):
     try:
-        print("getting connection")
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute(query_string, (user_name,))
-        rows = cur.fetchall()
-    except Exception as e:
-        return {"error": "DB_CONNECTION_ERROR"}
-    close_connection(conn)
-
-    if len(rows) == 0:
-        return {"error": "USER_NOT_FOUND"}
-    elif len(rows) > 1:
-        return {"error": "DB_ERROR"}
-    elif rows[0]["password"] != password:
-        return {"error": "INVALID_PASSWORD"}
-    user = rows[0]
-    del user["password"]
-    return user
-
-
-##### DOCUMENT PIPELINE #####
-
-
-def delete_document(doc_id):
-    try:
-        conn = get_connection()
-        with conn.cursor() as cursor:
-            sql = f"DELETE FROM document_chunk WHERE doc_id = %s"
-            res = cursor.execute(sql, (doc_id,))
-            sql = f"DELETE FROM document WHERE doc_id = %s"
-            res = cursor.execute(sql, (doc_id,))
-            conn.commit()
-    except pymysql.Error as e:
-        print(f"Error deleting row: {e}")
-        raise
-    return res
-
-
-def get_all_docs_from_domain(conn, domain_id):
-    cur = conn.cursor()
-    cur.execute(
-        "SELECT doc_id, domain_id, doc_uri, doc_title, doc_text FROM document WHERE domain_id = %s",
-        (domain_id,),
-    )
-    rows = cur.fetchall()
-    res = [
-        (
-            row["doc_id"],
-            row["domain_id"],
-            row["doc_uri"],
-            row["doc_title"],
-            row["doc_text"],
+        cur.execute(
+            """
+            UPDATE  user
+            SET     access_token = %s,
+                    refresh_token = %s
+            WHERE   user_id_google = %s
+            """,
+            (access_token, refresh_token, user_id_google),
         )
-        for row in rows
-    ]
-    return res
-
-
-def insert_document_chunk(doc_id, chunk_text, chunk_embedding):
-    json_data = json.dumps(chunk_embedding)
-    conn = get_connection()
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO document_chunk (doc_id, chunk_text, chunk_embedding) VALUES (%s, %s, %s)",
-        (doc_id, chunk_text, json_data),
-    )
-    conn.commit()
-    return cur.lastrowid
-
-
-def update_document_chunk_embedding(conn, doc_chunk_id, embedding):
-    json_data = json.dumps(embedding)
-    cur = conn.cursor()
-    cur.execute(
-        "UPDATE document_chunk SET chunk_embedding = %s WHERE doc_chunk_id = %s",
-        (
-            json_data,
-            doc_chunk_id,
-        ),
-    )
-    conn.commit()
+        conn.commit()
+    except Exception as e:
+        print("***************************")
+        print("DB error in update_conversation")
+        print(e)
+    close_connection(conn)

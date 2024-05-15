@@ -5,6 +5,7 @@ import { config } from './conf';
 import { fetchGet } from './utils/APIUtils';
 import { GoogleLogin } from '@react-oauth/google';
 import Auth from './components/Auth';
+import { login } from './utils/AuthUtils';
 import './App.css';
 
 function App() {
@@ -23,13 +24,13 @@ function Main() {
 
   const onSuccess = tokenResponse => {
     console.log(tokenResponse)
-    fetchGet(`login?token=${tokenResponse.credential}`)
-      .then(res => console.log('login result', res));
+    login(tokenResponse.credential)
   }
 
-  const login = useGoogleLogin({
+  const glogin = useGoogleLogin({
     onSuccess: tokenResponse => {
       console.log(tokenResponse)
+
       fetchGet(`login?token=${tokenResponse.credential}`)
         .then(res => console.log('login result', res));
     },
@@ -38,8 +39,6 @@ function Main() {
 
   return <div className="App">
     <h1>Hello</h1>
-    <button onClick={() => login()}>Sign in with Google 🚀</button>
-    <br /><br />
     <div style={{ "width": "200px", "margin": "auto" }}>
       <GoogleLogin
         onSuccess={onSuccess}
@@ -52,6 +51,9 @@ function Main() {
     <a href={config.url.GAUTH_URL} rel="noopener noreferrer">
       Authorize
     </a>
+
+    {/* <button onClick={() => glogin()}>Sign in with Google 🚀</button> */}
+
   </div>
 
 }

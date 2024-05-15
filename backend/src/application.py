@@ -5,7 +5,7 @@ from flask_cors import CORS
 from api import auth, hello
 from datetime import datetime
 from utils import gmail_api
-from utils import utils, db
+
 
 PORT = 5001
 
@@ -32,29 +32,8 @@ class GetTokenFromAuthCode(Resource):
     def get(self):
         auth_code = request.args.get("code")
         print("auth_code:", auth_code)
-        token = gmail_api.get_token_from_auth_code(auth_code)
-        id_token = utils.decode_google_jwt(token["id_token"])
-        sub = id_token["sub"]
-        access_token = token["access_token"]
-        refresh_token = token["refresh_token"]
-        user_id = db.insert_user(
-            id_token["email"],
-            sub,
-            id_token["given_name"],
-            id_token["family_name"],
-            access_token,
-            refresh_token,
-        )
-        print(user_id)
-        return {"user_id": user_id, "google_user_id": sub}
-
-    def post(self):
-        auth_code = request.form.get("code")
-        print("auth_code:", auth_code)
-        token = {}
-        if auth_code:
-            token = gmail_api.get_token_from_auth_code(auth_code)
-        return token
+        auth.get_token_from_auth_code(auth_code)
+        return {"status": "SUCCESS"}
 
 
 class Labels(Resource):
