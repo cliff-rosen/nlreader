@@ -10,7 +10,8 @@ import Auth from './components/Auth';
 import { useSessionManager } from './utils/AuthUtils';
 import './App.css';
 
-import { Layout, Divider } from 'antd';
+import { Table, Layout, Divider } from 'antd';
+import EmailFilter from './components/EmailFilter';
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -28,8 +29,6 @@ const contentStyle = {
 
 function App() {
   const sessionManager = useSessionManager();
-  const [messages, setMessages] = useState([]);
-
   console.log('sessionManager', sessionManager)
 
   return (
@@ -48,12 +47,25 @@ function App() {
 
 
 function Main({ sessionManager }) {
+  const [labels, setLabels] = useState([]);
 
   const getLabels = async () => {
     console.log('click')
     const res = await fetchGet('labels')
-    console.log('labels', res)
+    const l = res.map(e => ({ key: e['id'], 'name': e['name'] }))
+    console.log('labels', l)
+    setLabels(l)
+
   }
+
+  const columns = [
+    {
+      title: 'Label',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text) => <a>{text}</a>,
+    }
+  ];
 
   return <div className="App">
     <h1>Hello</h1>
@@ -70,25 +82,9 @@ function Main({ sessionManager }) {
 
 
     <button onClick={getLabels}>Get Labels</button>
-
+    <EmailFilter labelOptions={labels} />
   </div>
 
 }
-
-
-{/* <GoogleOAuthProvider clientId={REACT_APP_GOOGLE_CLIENT_ID}>
-  <div>
-    <h2>Social Login</h2>
-    <GoogleLogin
-      onSuccess={handleGoogleSuccess}
-      onFailure={handleGoogleFailure}
-      cookiePolicy={'single_host_origin'}
-      scope="https://www.googleapis.com/auth/gmail.readonly"
-      useOneTap
-    />
-    {error && <p>{error}</p>}
-  </div>
-</GoogleOAuthProvider> */}
-
 
 export default App;

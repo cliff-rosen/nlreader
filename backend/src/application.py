@@ -68,8 +68,23 @@ class Labels(Resource):
         service = gmail_api.get_service_from_creds(creds)
         print(service)
         labels = gmail_api.get_labels(service)
-        print("labels", labels)
+        # print("labels", labels)
         return labels
+
+
+class Emails(Resource):
+    def get(self):
+        user = get_session()
+        creds_dict = json.loads(user["credentials"])
+        creds = gmail_api.credentials_from_dict(creds_dict)
+        service = gmail_api.get_service_from_creds(creds)
+
+        label = request.args.get("label")
+        start_date = request.args.get("startDate")
+        end_date = request.args.get("endDate")
+        emails = gmail_api.get_messages(service, label, start_date, end_date)
+
+        return emails
 
 
 class Hello(Resource):
@@ -103,6 +118,7 @@ api.add_resource(Login, "/login")
 api.add_resource(GetAuthUrl, "/get_auth_url")
 api.add_resource(GetTokenFromAuthCode, "/get_token_from_auth_code")
 api.add_resource(Labels, "/labels")
+api.add_resource(Emails, "/emails")
 api.add_resource(Hello, "/hello")
 api.add_resource(Search, "/search")
 
