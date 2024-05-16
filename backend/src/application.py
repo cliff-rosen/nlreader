@@ -1,10 +1,11 @@
 import os, time
+import json
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse, abort
 from flask_cors import CORS
 from api import auth, hello
 from datetime import datetime
-from utils import gmail_api, utils
+from utils import gmail_api, utils, db
 
 
 PORT = 5001
@@ -28,15 +29,19 @@ def get_session():
             return {"user_id": -1}
     else:
         return {"user_id": -1}
-    return decoded_token
+    user = db.get_user_by_google_user_id(decoded_token["user_id_google"])
+    # print("user", user)
+    # decoded_token["access_token"] = user["access_token"]
+    # decoded_token["refresh_token"] = user["refresh_token"]
+    return user
 
 
 class Login(Resource):
     def get(self):
         token = request.args.get("token")
         print("token:", token)
-        res = auth.login(token)
-        return res
+        user = auth.login(token)
+        return user
 
 
 class GetAuthUrl(Resource):
@@ -56,7 +61,13 @@ class GetTokenFromAuthCode(Resource):
 
 class Labels(Resource):
     def get(self):
-        labels = gmail_api.get_labels()
+        user = get_session()
+        # print(user)
+        creds_dict = json.loads(user["credentials"])
+        creds = gmail_api.credentials_from_dict(creds_dict)
+        service = gmail_api.get_service_from_creds(creds)
+        print(service)
+        labels = gmail_api.get_labels(service)
         print("labels", labels)
         return labels
 

@@ -49,6 +49,12 @@ function App() {
 
 function Main({ sessionManager }) {
 
+  const getLabels = async () => {
+    console.log('click')
+    const res = await fetchGet('labels')
+    console.log('labels', res)
+  }
+
   return <div className="App">
     <h1>Hello</h1>
 
@@ -63,7 +69,7 @@ function Main({ sessionManager }) {
     }
 
 
-    {/* <button onClick={() => glogin()}>Sign in with Google 🚀</button> */}
+    <button onClick={getLabels}>Get Labels</button>
 
   </div>
 

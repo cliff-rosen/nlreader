@@ -94,18 +94,17 @@ def get_user_by_google_user_id(user_id_google):
     return rows[0]
 
 
-def update_user_authorization(user_id, access_token, refresh_token):
+def update_user_authorization(user_id, credentials):
     try:
         conn = get_connection()
         cur = conn.cursor()
         cur.execute(
             """
             UPDATE  user
-            SET     access_token = %s,
-                    refresh_token = %s
+            SET     credentials = %s
             WHERE   user_id = %s
             """,
-            (access_token, refresh_token, user_id),
+            (credentials, user_id),
         )
         conn.commit()
     except Exception as e:

@@ -1,3 +1,4 @@
+import google.oauth2.credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
@@ -23,16 +24,6 @@ def test():
     return service
 
 
-def get_creds_from_jwt(jwt):
-    return {}
-
-
-def get_service_from_JWT(jwt):
-    creds = get_creds_from_jwt(jwt)
-    service = build("gmail", "v1", credentials=creds)
-    return service
-
-
 def credentials_to_dict(credentials):
     return {
         "token": credentials.token,
@@ -42,6 +33,16 @@ def credentials_to_dict(credentials):
         "client_secret": credentials.client_secret,
         "scopes": credentials.scopes,
     }
+
+
+def credentials_from_dict(creds_dict):
+    credentials = google.oauth2.credentials.Credentials(**creds_dict)
+    return credentials
+
+
+def get_service_from_creds(creds):
+    service = build("gmail", "v1", credentials=creds)
+    return service
 
 
 def get_auth_url():
@@ -71,7 +72,8 @@ def get_token_from_auth_code(auth_code):
     except Exception as e:
         raise Exception(f"Failed to fetch access token: {e}")
 
-    return token_response
+    # return token_response
+    return credentials_dict
 
 
 ### Google API wrappers ###
