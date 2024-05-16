@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { Layout, Space, Typography, Menu, MenuProps } from 'antd';
+import { GoogleLogin } from '@react-oauth/google';
 
 const { Header } = Layout;
 const items = [
     {
-        label: 'Newsletter',
-        key: 'newsletter',
+        label: 'logout',
+        key: 'logout',
     },
-    {
-        label: 'Workbench',
-        key: 'workbench',
-    }]
+]
 
 const Nav = ({ sessionManager }) => {
     console.log("Nav render");
@@ -19,9 +17,15 @@ const Nav = ({ sessionManager }) => {
     const location = useLocation();
     console.log(location)
 
+    const onSuccess = tokenResponse => {
+        console.log(tokenResponse)
+        sessionManager.login(tokenResponse.credential)
+    }
+
     const onClick = (e) => {
         console.log('click ', e);
-        navigate(`/${e.key}`)
+        // navigate(`/${e.key}`)
+        sessionManager.logout()
     };
 
     return (
@@ -52,10 +56,26 @@ const Nav = ({ sessionManager }) => {
             >
             </div>
 
-            <div style={{ flexGrow: 0, fontSize: "1em" }}>userid: {sessionManager?.user.user.user_id}</div>
+            <div style={{ flexGrow: 0, fontSize: "1em" }}></div>
 
             <div style={{ flexGrow: 0, fontSize: "1em" }}>
-                <Menu onClick={onClick} selectedKeys={[location.pathname.substring(1)]} mode="horizontal" items={items} />
+                {sessionManager?.user?.user_email}
+            </div>
+
+
+            <div style={{ flexGrow: 0, fontSize: "1em" }}>
+                {sessionManager?.user?.user_id ?
+                    <div>
+                        <Menu onClick={onClick} selectedKeys={[location.pathname.substring(1)]} mode="horizontal" items={items} />
+                    </div>
+                    :
+                    <GoogleLogin
+                        onSuccess={onSuccess}
+                        onError={() => {
+                            console.log('Login Failed');
+                        }}
+                    />
+                }
             </div>
         </Header>
     );

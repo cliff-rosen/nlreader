@@ -10,7 +10,6 @@ import Auth from './components/Auth';
 import { useSessionManager } from './utils/AuthUtils';
 import './App.css';
 
-import { useGoogleLogin } from '@react-oauth/google';
 import { Layout, Divider } from 'antd';
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -50,35 +49,19 @@ function App() {
 
 function Main({ sessionManager }) {
 
-  const onSuccess = tokenResponse => {
-    console.log(tokenResponse)
-    sessionManager.login(tokenResponse.credential)
-  }
-
-  const glogin = useGoogleLogin({
-    onSuccess: tokenResponse => {
-      console.log(tokenResponse)
-
-      fetchGet(`login?token=${tokenResponse.credential}`)
-        .then(res => console.log('login result', res));
-    },
-    flow: 'auth-code',
-  });
-
   return <div className="App">
     <h1>Hello</h1>
-    <div style={{ "width": "200px", "margin": "auto" }}>
-      <GoogleLogin
-        onSuccess={onSuccess}
-        onError={() => {
-          console.log('Login Failed');
-        }}
-      />
-    </div>
+
     <br />
-    <a href={config.url.GAUTH_URL} rel="noopener noreferrer">
-      Authorize
-    </a>
+
+    {sessionManager?.user?.user_id ?
+      <div style={{ "width": "200px", "margin": "auto" }}>
+        <a href={config.url.GAUTH_URL} rel="noopener noreferrer">
+          Authorize
+        </a>
+      </div> : ""
+    }
+
 
     {/* <button onClick={() => glogin()}>Sign in with Google 🚀</button> */}
 

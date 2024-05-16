@@ -4,7 +4,7 @@ from flask_restful import Resource, Api, reqparse, abort
 from flask_cors import CORS
 from api import auth, hello
 from datetime import datetime
-from utils import gmail_api
+from utils import gmail_api, utils
 
 
 PORT = 5001
@@ -13,6 +13,22 @@ application = Flask(__name__)
 CORS(application)
 
 # logger.info('Initializing application...')
+
+
+def get_session():
+    auth_header = request.headers.get("Authorization")
+    if auth_header:
+        try:
+            auth_token = auth_header.split(" ")[1]
+            decoded_token = utils.decode_jwt(auth_token)
+            print(decoded_token)
+            if "error" in decoded_token:
+                return {"user_id": -1}
+        except IndexError:
+            return {"user_id": -1}
+    else:
+        return {"user_id": -1}
+    return decoded_token
 
 
 class Login(Resource):
@@ -30,9 +46,11 @@ class GetAuthUrl(Resource):
 
 class GetTokenFromAuthCode(Resource):
     def get(self):
+        session = get_session()
+        print("session", session)
         auth_code = request.args.get("code")
         print("auth_code:", auth_code)
-        auth.get_token_from_auth_code(auth_code)
+        auth.get_token_from_auth_code(session["user_id"], auth_code)
         return {"status": "SUCCESS"}
 
 
