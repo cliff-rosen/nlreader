@@ -5,6 +5,7 @@ from google.auth.transport.requests import Request
 import os, pickle
 import base64
 from flask import session, redirect, url_for
+from datetime import datetime, timedelta
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = [
@@ -80,7 +81,12 @@ def get_token_from_auth_code(auth_code):
 
 
 def get_messages(service, label, start_date, end_date):
-    query = f"after:{start_date} before:{end_date}"
+
+    end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
+    next_day = end_date_obj + timedelta(days=1)
+    next_day_str = next_day.strftime("%Y-%m-%d")
+    query = f"after:{start_date} before:{next_day_str}"
+
     results = (
         service.users()
         .messages()
@@ -107,21 +113,31 @@ def get_message(service, id):
         (header["value"] for header in headers if header["name"] == "Subject"),
         "No Subject",
     )
+    date = next(
+        (header["value"] for header in headers if header["name"] == "Date"),
+        "No Date",
+    )
     text = get_message_text(msg)
-    return {"msg": msg, "subject": subject, "text": text}
+    return {"msg": msg, "date": date, "subject": subject, "text": text}
 
 
 def get_message_text(message):
-    payload = message.get("payload", {})
-    parts = payload.get("parts", [])
-    text = ""
-    for part in parts:
-        data = part["body"]["data"]
-        data_decoded = base64.urlsafe_b64decode(data.encode("ASCII")).decode("utf-8")
-        # print(part["mimeType"])
-        # print(data_decoded[:100])
-        if part["mimeType"] == "text/plain":
-            text += data_decoded
+    try:
+        payload = message.get("payload", {})
+        parts = payload.get("parts", [])
+        text = ""
+        for part in parts:
+            data = part["body"]["data"]
+            data_decoded = base64.urlsafe_b64decode(data.encode("ASCII")).decode(
+                "utf-8"
+            )
+            # print(part["mimeType"])
+            # print(data_decoded[:100])
+            if part["mimeType"] == "text/plain":
+                text += data_decoded
+    except Exception as e:
+        print("error", e)
+        text = "ERROR"
     return text
 
 

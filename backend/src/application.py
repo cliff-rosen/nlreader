@@ -82,9 +82,20 @@ class Emails(Resource):
         label = request.args.get("label")
         start_date = request.args.get("startDate")
         end_date = request.args.get("endDate")
-        emails = gmail_api.get_messages(service, label, start_date, end_date)
+        messages = gmail_api.get_messages(service, label, start_date, end_date)
 
-        return emails
+        message_arr = []
+        for message_part in messages:
+            message = gmail_api.get_message(service, message_part["id"])
+            print(f"Message ID: {message['msg']['id']}, Subject: {message['subject']}")
+            message_arr.append(
+                {
+                    "key": message["msg"]["id"],
+                    "date": message["date"],
+                    "subject": message["subject"],
+                }
+            )
+        return message_arr
 
 
 class Hello(Resource):

@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Form, Select, DatePicker, Button } from 'antd';
-import moment from 'moment';
 import { fetchGet } from '../utils/APIUtils';
+import EmailList from './EmailList';
 
 const { RangePicker } = DatePicker;
 
@@ -21,7 +21,10 @@ const EmailFilter = ({ labelOptions }) => {
         const endDate = dateRange[1].format('YYYY-MM-DD');
 
         fetchGet(`emails?label=${label}&startDate=${startDate}&endDate=${endDate}`)
-            .then(res => console.log(res))
+            .then(res => {
+                console.log(res)
+                setEmails(res)
+            })
 
     };
 
@@ -62,7 +65,7 @@ const EmailFilter = ({ labelOptions }) => {
                 </Form.Item>
             </Form>
             <br />
-
+            <EmailList emails={emails} />
         </div>
     );
 };
