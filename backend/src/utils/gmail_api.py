@@ -81,6 +81,23 @@ def get_token_from_auth_code(auth_code):
 
 
 def get_messages(service, label, start_date, end_date):
+    message_list = get_message_list(service, label, start_date, end_date)
+    for message_part in message_list:
+        message = get_message(service, message_part["id"])
+        print(f"Message ID: {message['msg']['id']}, Subject: {message['subject']}")
+        message_list.append(
+            {
+                "key": message["msg"]["id"],
+                "date": message["date"],
+                "sender": message["sender"],
+                "subject": message["subject"],
+                "body": message["body"][:50],
+            }
+        )
+    return message_list
+
+
+def get_message_list(service, label, start_date, end_date):
 
     end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
     next_day = end_date_obj + timedelta(days=1)
@@ -127,7 +144,7 @@ def get_message(service, id):
         "date": date,
         "sender": sender,
         "subject": subject,
-        "text": text,
+        "body": text,
     }
 
 

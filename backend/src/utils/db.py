@@ -112,3 +112,34 @@ def update_user_authorization(user_id, credentials):
         print("DB error in update_conversation")
         print(e)
     close_connection(conn)
+
+
+def insert_message(
+    batch_id,
+    message_date,
+    message_sender,
+    message_subject,
+    message_body,
+):
+    try:
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            res = cursor.execute(
+                """
+                INSERT INTO messages (batch_id, message_date, message_sender, message_subject, message_body)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (
+                    batch_id,
+                    message_date,
+                    message_sender,
+                    message_subject,
+                    message_body,
+                ),
+            )
+        conn.commit()
+        message_id = cursor.lastrowid
+    except Exception as e:
+        print("DB error in insert_message:", e)
+        raise
+    return message_id

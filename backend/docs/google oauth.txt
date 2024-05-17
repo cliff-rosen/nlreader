@@ -19,7 +19,7 @@ Basic Flow:
 1. React embeds authorization URL in a link
 2. User clicks authorization URL which records current react route in local storage and launches Google authorization flow
 3. Once user completes flow, browser is redirected to auth callback react route with auth code
-4. Auth callback sends auth code to Flask, which:
+4. Auth callback (handled in react) sends auth code to Flask, which:
 - exchanges auth code for google access token and refresh token
 - stores the access token and refresh in the user table
 5. Auth callback then updates local storage to indicate that google authorization has been obtained

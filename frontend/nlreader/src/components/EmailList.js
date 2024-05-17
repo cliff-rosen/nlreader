@@ -2,25 +2,6 @@ import React from 'react';
 import { Table } from 'antd';
 
 const EmailList = ({ emails }) => {
-    // Sample data
-    const data = [
-        {
-            key: '1',
-            date: '2024-05-01',
-            subject: 'Math',
-        },
-        {
-            key: '2',
-            date: '2024-05-02',
-            subject: 'Science',
-        },
-        {
-            key: '3',
-            date: '2024-05-03',
-            subject: 'History',
-        },
-    ];
-
     // Column definitions
     const columns = [
         {
@@ -37,6 +18,11 @@ const EmailList = ({ emails }) => {
             title: 'Subject',
             dataIndex: 'subject',
             key: 'subject',
+        },
+        {
+            title: 'Body',
+            dataIndex: 'body',
+            key: 'body',
         },
     ];
 
