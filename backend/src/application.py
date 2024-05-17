@@ -92,6 +92,7 @@ class Emails(Resource):
                 {
                     "key": message["msg"]["id"],
                     "date": message["date"],
+                    "sender": message["sender"],
                     "subject": message["subject"],
                 }
             )

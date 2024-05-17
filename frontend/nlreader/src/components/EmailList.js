@@ -29,6 +29,11 @@ const EmailList = ({ emails }) => {
             key: 'date',
         },
         {
+            title: 'From',
+            dataIndex: 'sender',
+            key: 'sender',
+        },
+        {
             title: 'Subject',
             dataIndex: 'subject',
             key: 'subject',

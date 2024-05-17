@@ -109,16 +109,26 @@ def get_message(service, id):
     )
     payload = msg.get("payload", {})
     headers = payload.get("headers", [])
-    subject = next(
-        (header["value"] for header in headers if header["name"] == "Subject"),
-        "No Subject",
-    )
     date = next(
         (header["value"] for header in headers if header["name"] == "Date"),
         "No Date",
     )
+    sender = next(
+        (header["value"] for header in headers if header["name"] == "From"),
+        "UNKOWN",
+    )
+    subject = next(
+        (header["value"] for header in headers if header["name"] == "Subject"),
+        "No Subject",
+    )
     text = get_message_text(msg)
-    return {"msg": msg, "date": date, "subject": subject, "text": text}
+    return {
+        "msg": msg,
+        "date": date,
+        "sender": sender,
+        "subject": subject,
+        "text": text,
+    }
 
 
 def get_message_text(message):
@@ -174,3 +184,43 @@ def get_service_old():
 
     service = build("gmail", "v1", credentials=creds)
     return service
+
+
+"""
+https://developers.google.com/resources/api-libraries/documentation/gmail/v1/python/latest/gmail_v1.users.messages.html
+
+    { # An email message.
+    "internalDate": "A String", # The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the Date header. However, for API-migrated mail, it can be configured by client to be based on the Date header.
+    "historyId": "A String", # The ID of the last history record that modified this message.
+    "payload": { # A single MIME message part. # The parsed email structure in the message parts.
+      "body": { # The body of a single MIME message part. # The message part body for this part, which may be empty for container MIME message parts.
+        "data": "A String", # The body data of a MIME message part as a base64url encoded string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
+        "attachmentId": "A String", # When present, contains the ID of an external attachment that can be retrieved in a separate messages.attachments.get request. When not present, the entire content of the message part body is contained in the data field.
+        "size": 42, # Number of bytes for the message part data (encoding notwithstanding).
+      },
+      "mimeType": "A String", # The MIME type of the message part.
+      "partId": "A String", # The immutable ID of the message part.
+      "filename": "A String", # The filename of the attachment. Only present if this message part represents an attachment.
+      "headers": [ # List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as To, From, and Subject.
+        {
+          "name": "A String", # The name of the header before the : separator. For example, To.
+          "value": "A String", # The value of the header after the : separator. For example, someuser@example.com.
+        },
+      ],
+      "parts": [ # The child MIME message parts of this part. This only applies to container MIME message parts, for example multipart/*. For non- container MIME message part types, such as text/plain, this field is empty. For more information, see RFC 1521.
+        # Object with schema name: MessagePart
+      ],
+    },
+    "snippet": "A String", # A short part of the message text.
+    "raw": "A String", # The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in messages.get and drafts.get responses when the format=RAW parameter is supplied.
+    "sizeEstimate": 42, # Estimated size in bytes of the message.
+    "threadId": "A String", # The ID of the thread the message belongs to. To add a message or draft to a thread, the following criteria must be met:
+        # - The requested threadId must be specified on the Message or Draft.Message you supply with your request.
+        # - The References and In-Reply-To headers must be set in compliance with the RFC 2822 standard.
+        # - The Subject headers must match.
+    "labelIds": [ # List of IDs of labels applied to this message.
+      "A String",
+    ],
+    "id": "A String", # The immutable ID of the message.
+  }
+"""

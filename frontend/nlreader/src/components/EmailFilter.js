@@ -31,6 +31,7 @@ const EmailFilter = ({ labelOptions }) => {
     return (
         <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             <Form
+                style={{ display: "xflex" }}
                 form={form}
                 name="custom-form"
                 layout="vertical"
