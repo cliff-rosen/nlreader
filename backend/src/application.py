@@ -83,7 +83,6 @@ class Emails(Resource):
         start_date = request.args.get("startDate")
         end_date = request.args.get("endDate")
         messages = gmail_api.get_messages(service, label, start_date, end_date)
-
         return messages
 
 

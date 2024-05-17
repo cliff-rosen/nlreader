@@ -81,11 +81,13 @@ def get_token_from_auth_code(auth_code):
 
 
 def get_messages(service, label, start_date, end_date):
+    messages = []
     message_list = get_message_list(service, label, start_date, end_date)
+
     for message_part in message_list:
         message = get_message(service, message_part["id"])
         print(f"Message ID: {message['msg']['id']}, Subject: {message['subject']}")
-        message_list.append(
+        messages.append(
             {
                 "key": message["msg"]["id"],
                 "date": message["date"],
@@ -94,7 +96,7 @@ def get_messages(service, label, start_date, end_date):
                 "body": message["body"][:50],
             }
         )
-    return message_list
+    return messages
 
 
 def get_message_list(service, label, start_date, end_date):
