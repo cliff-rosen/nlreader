@@ -143,3 +143,25 @@ def insert_message(
         print("DB error in insert_message:", e)
         raise
     return message_id
+
+
+# get_messages_by_batch_id
+def get_messages_by_batch_id(batch_id):
+    query_string = """
+                    SELECT *
+                    FROM messages
+                    WHERE batch_id = %s
+                """
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(query_string, (batch_id,))
+        rows = cur.fetchall()
+    except Exception as e:
+        print("db.get_messages_by_batch_id ERROR:", e)
+        return {"result": "DB_CONNECTION_ERROR"}
+    close_connection(conn)
+    if len(rows) == 0:
+        return {"result": "MESSAGES_NOT_FOUND"}
+    rows[0]["result"] = "SUCCESS"
+    return rows

@@ -29,43 +29,45 @@ const EmailFilter = ({ labelOptions }) => {
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <Form
-                style={{ display: "xflex" }}
-                form={form}
-                name="custom-form"
-                layout="vertical"
-                onFinish={onFinish}
-                initialValues={{
-                    labels: '-',
-                    dateRange: [],
-                }}
-            >
-                <Form.Item
-                    name="labels"
-                    label="Labels"
-                    rules={[{ required: true, message: 'Please select a label' }]}
+        <div style={{ maxWidth: '800px', margin: '0 auto', xborder: 'solid' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto', xborder: 'solid' }}>
+                <Form
+                    style={{ display: "xflex" }}
+                    form={form}
+                    name="custom-form"
+                    layout="vertical"
+                    onFinish={onFinish}
+                    initialValues={{
+                        labels: '-',
+                        dateRange: [],
+                    }}
                 >
-                    <Select placeholder="Select a label">
-                        {labelOptions.map(e => <Select.Option value={e['key']}>{e['name']}</Select.Option>)}
-                    </Select>
-                </Form.Item>
+                    <Form.Item
+                        name="labels"
+                        label="Labels"
+                        rules={[{ required: true, message: 'Please select a label' }]}
+                    >
+                        <Select placeholder="Select a label">
+                            {labelOptions.map(e => <Select.Option value={e['key']}>{e['name']}</Select.Option>)}
+                        </Select>
+                    </Form.Item>
 
-                <Form.Item
-                    name="dateRange"
-                    label="Date Range"
-                    rules={[{ required: true, message: 'Please select a date range' }]}
-                >
-                    <RangePicker />
-                </Form.Item>
+                    <Form.Item
+                        name="dateRange"
+                        label="Date Range"
+                        rules={[{ required: true, message: 'Please select a date range' }]}
+                    >
+                        <RangePicker />
+                    </Form.Item>
 
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
-                </Form.Item>
-            </Form>
-            <br />
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+
+            </div>
             <EmailList emails={emails} />
         </div>
     );
