@@ -154,7 +154,6 @@ def get_message_text(message):
     print("entered get_message_text")
     try:
         payload = message.get("payload", {})
-
         if payload.get("mimeType") == "text/plain":
             # Body is directly in payload
             print(" message payload of type text/plain")
@@ -259,4 +258,18 @@ https://developers.google.com/resources/api-libraries/documentation/gmail/v1/pyt
     ],
     "id": "A String", # The immutable ID of the message.
   }
-"""
+
+msg.mimeType
+msg.body
+msg.parts[]
+    partId
+    mimeType,
+    body
+    parts
+        partId
+        mimeType,
+        body
+        parts
+
+  
+  """

@@ -29,8 +29,9 @@ const EmailFilter = ({ labelOptions }) => {
     };
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', xborder: 'solid' }}>
+        <div>
             <div style={{ maxWidth: '600px', margin: '0 auto', xborder: 'solid' }}>
+                <h1>Select Batch</h1>
                 <Form
                     style={{ display: "xflex" }}
                     form={form}

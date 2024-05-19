@@ -77,7 +77,7 @@ def get_user_by_google_user_id(user_id_google):
                     WHERE user_id_google = %s
                 """
     try:
-        print("getting connection")
+        print("get_user_by_google_user_id")
         conn = get_connection()
         cur = conn.cursor()
         cur.execute(query_string, (user_id_google,))

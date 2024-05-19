@@ -64,3 +64,9 @@ message_id = "18f87b8a4882946b"
 # message_id = "18f8753e1c6bedc6"
 message = get_message(service, message_id)
 print(message["body"])
+
+"""
+ * Detected change in 'C:\\Users\\cliff\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\site-packages\\werkzeug\\utils.py', reloading
+ * Detected change in 'C:\\Users\\cliff\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\site-packages\\werkzeug\\datastructures\\__init__.py', reloading
+ * Detected change in 'c:\\code\\nlreader\\backend\\src\\utils\\utils.py', reloading
+ """

@@ -31,8 +31,6 @@ def get_session():
         return {"user_id": -1}
     user = db.get_user_by_google_user_id(decoded_token["user_id_google"])
     # print("user", user)
-    # decoded_token["access_token"] = user["access_token"]
-    # decoded_token["refresh_token"] = user["refresh_token"]
     return user
 
 
@@ -63,11 +61,13 @@ class Labels(Resource):
     def get(self):
         user = get_session()
         # print(user)
+        print("reading credentials from dictionary")
         creds = gmail_api.credentials_from_dict(json.loads(user["credentials"]))
+        print("building service")
         service = gmail_api.get_service_from_creds(creds)
-        print(service)
+        print("retrieving labels")
         labels = gmail_api.get_labels(service)
-        # print("labels", labels)
+        print("labels", labels)
         return labels
 
 
