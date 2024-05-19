@@ -63,8 +63,7 @@ class Labels(Resource):
     def get(self):
         user = get_session()
         # print(user)
-        creds_dict = json.loads(user["credentials"])
-        creds = gmail_api.credentials_from_dict(creds_dict)
+        creds = gmail_api.credentials_from_dict(json.loads(user["credentials"]))
         service = gmail_api.get_service_from_creds(creds)
         print(service)
         labels = gmail_api.get_labels(service)
@@ -72,7 +71,7 @@ class Labels(Resource):
         return labels
 
 
-class Emails(Resource):
+class Messages(Resource):
     def get(self):
         user = get_session()
         creds_dict = json.loads(user["credentials"])
@@ -117,7 +116,7 @@ api.add_resource(Login, "/login")
 api.add_resource(GetAuthUrl, "/get_auth_url")
 api.add_resource(GetTokenFromAuthCode, "/get_token_from_auth_code")
 api.add_resource(Labels, "/labels")
-api.add_resource(Emails, "/emails")
+api.add_resource(Messages, "/messages")
 api.add_resource(Hello, "/hello")
 api.add_resource(Search, "/search")
 

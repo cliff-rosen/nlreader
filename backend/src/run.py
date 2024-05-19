@@ -55,4 +55,12 @@ def main():
     print("done")
 
 
-main()
+user = db.get_user_by_google_user_id("108940855548615648192")
+creds_dict = json.loads(user["credentials"])
+creds = gmail_api.credentials_from_dict(creds_dict)
+service = gmail_api.get_service_from_creds(creds)
+
+message_id = "18f87b8a4882946b"
+# message_id = "18f8753e1c6bedc6"
+message = get_message(service, message_id)
+print(message["body"])

@@ -114,6 +114,33 @@ def update_user_authorization(user_id, credentials):
     close_connection(conn)
 
 
+##### MESSAGES #####
+
+
+def insert_batch(label, email_account, start_date, end_date):
+    try:
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            res = cursor.execute(
+                """
+                INSERT INTO batch (label, email_account, start_date, end_date)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (
+                    label,
+                    email_account,
+                    start_date,
+                    end_date,
+                ),
+            )
+        conn.commit()
+        batch_id = cursor.lastrowid
+    except Exception as e:
+        print("DB error in insert_batch:", e)
+        raise
+    return batch_id
+
+
 def insert_message(
     batch_id,
     message_date,

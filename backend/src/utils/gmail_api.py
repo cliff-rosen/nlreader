@@ -151,23 +151,40 @@ def get_message(service, id):
 
 
 def get_message_text(message):
+    print("entered get_message_text")
     try:
         payload = message.get("payload", {})
-        parts = payload.get("parts", [])
-        text = ""
-        for part in parts:
-            data = part["body"]["data"]
-            data_decoded = base64.urlsafe_b64decode(data.encode("ASCII")).decode(
-                "utf-8"
-            )
-            # print(part["mimeType"])
-            # print(data_decoded[:100])
-            if part["mimeType"] == "text/plain":
-                text += data_decoded
+
+        if payload.get("mimeType") == "text/plain":
+            # Body is directly in payload
+            print(" message payload of type text/plain")
+            return base64.urlsafe_b64decode(data.encode("ASCII")).decode("utf-8")
+        elif payload.get("mimeType").startswith("multipart/"):
+            print(" message payload of type multipart/")
+            parts = payload.get("parts", [])
+            # print("payload:", payload)
+            text = ""
+            for part in parts:
+                print(f" processing part {part['partId']} of type {part['mimeType']}")
+                if part["mimeType"] == "text/plain":
+                    data = part["body"]["data"]
+                    data_decoded = base64.urlsafe_b64decode(
+                        data.encode("ASCII")
+                    ).decode("utf-8")
+                    # print(part["mimeType"])
+                    # print(data_decoded[:100])
+                    text += data_decoded
+            if text:
+                return text
+            else:
+                return "No text body found"
+        else:
+            return "No text body found"
+
     except Exception as e:
         print("error", e)
         text = "ERROR"
-    return text
+    return "No text body found"
 
 
 def get_labels(service):
@@ -243,4 +260,3 @@ https://developers.google.com/resources/api-libraries/documentation/gmail/v1/pyt
     "id": "A String", # The immutable ID of the message.
   }
 """
-

@@ -20,7 +20,7 @@ const EmailFilter = ({ labelOptions }) => {
         const startDate = dateRange[0].format('YYYY-MM-DD');
         const endDate = dateRange[1].format('YYYY-MM-DD');
 
-        fetchGet(`emails?label=${label}&startDate=${startDate}&endDate=${endDate}`)
+        fetchGet(`messages?label=${label}&startDate=${startDate}&endDate=${endDate}`)
             .then(res => {
                 console.log(res)
                 setEmails(res)
