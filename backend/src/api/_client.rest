@@ -12,6 +12,11 @@ accept: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJ1c2VyX2lkX2dvb2dsZSI6IjEwODk0MDg1NTU0ODYxNTY0ODE5MiIsInVzZXJfZW1haWwiOiJjbGlmZi5yb3NlbkBnbWFpbC5jb20iLCJmaXJzdF9uYW1lIjoiQ2xpZmYiLCJsYXN0X25hbWUiOiJSb3NlbiJ9.bDmOUs_YUXnaCDCdwD1UbW2xw-64aGzVXoHDk71xLr4
 
 ###
+GET http://127.0.0.1:5001/batches?batch_id=3
+accept: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJ1c2VyX2lkX2dvb2dsZSI6IjEwODk0MDg1NTU0ODYxNTY0ODE5MiIsInVzZXJfZW1haWwiOiJjbGlmZi5yb3NlbkBnbWFpbC5jb20iLCJmaXJzdF9uYW1lIjoiQ2xpZmYiLCJsYXN0X25hbWUiOiJSb3NlbiJ9.bDmOUs_YUXnaCDCdwD1UbW2xw-64aGzVXoHDk71xLr4
+
+###
 GET http://127.0.0.1:5001/get_auth_url
 accept: application/json
 ###

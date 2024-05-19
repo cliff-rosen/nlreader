@@ -1,15 +1,26 @@
 // MyForm.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Select, DatePicker, Button } from 'antd';
 import { fetchGet } from '../utils/APIUtils';
 import EmailList from './EmailList';
 
 const { RangePicker } = DatePicker;
 
-const EmailFilter = ({ labelOptions }) => {
+const EmailFilter = () => {
     const [emails, setEmails] = useState([])
     const [form] = Form.useForm();
+    const [labelOptions, setLabelOptions] = useState([]);
+
+    useEffect(() => {
+        const getLabels = async () => {
+            const res = await fetchGet('labels');
+            const l = res.map(e => ({ key: e['id'], 'name': e['name'] }));
+            console.log('labels', l);
+            setLabelOptions(l);
+        };
+        getLabels()
+    }, [])
 
     const onFinish = (values) => {
 
@@ -23,7 +34,7 @@ const EmailFilter = ({ labelOptions }) => {
         fetchGet(`messages?label=${label}&startDate=${startDate}&endDate=${endDate}`)
             .then(res => {
                 console.log(res)
-                setEmails(res)
+                setEmails(res.messages)
             })
 
     };

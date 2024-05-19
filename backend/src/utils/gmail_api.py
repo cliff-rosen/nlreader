@@ -86,14 +86,16 @@ def get_messages(service, label, start_date, end_date):
 
     for message_part in message_list:
         message = get_message(service, message_part["id"])
-        print(f"Message ID: {message['msg']['id']}, Subject: {message['subject']}")
+        print(
+            f"Message ID: {message['msg']['id']}, Subject: {message['message_subject']}"
+        )
         messages.append(
             {
                 "key": message["msg"]["id"],
-                "date": message["date"],
-                "sender": message["sender"],
-                "subject": message["subject"],
-                "body": message["body"][:50],
+                "message_date": message["message_date"],
+                "message_sender": message["message_sender"],
+                "message_subject": message["message_subject"],
+                "message_body": message["message_body"][:50],
             }
         )
     return messages
@@ -143,10 +145,10 @@ def get_message(service, id):
     text = get_message_text(msg)
     return {
         "msg": msg,
-        "date": date,
-        "sender": sender,
-        "subject": subject,
-        "body": text,
+        "message_date": date,
+        "message_sender": sender,
+        "message_subject": subject,
+        "message_body": text,
     }
 
 

@@ -6,23 +6,23 @@ const EmailList = ({ emails }) => {
     const columns = [
         {
             title: 'Date',
-            dataIndex: 'date',
-            key: 'date',
+            dataIndex: 'message_date',
+            key: 'message_date',
         },
         {
             title: 'From',
-            dataIndex: 'sender',
-            key: 'sender',
+            dataIndex: 'message_sender',
+            key: 'message_sender',
         },
         {
             title: 'Subject',
-            dataIndex: 'subject',
-            key: 'subject',
+            dataIndex: 'message_subject',
+            key: 'message_subject',
         },
         {
             title: 'Body',
-            dataIndex: 'body',
-            key: 'body',
+            dataIndex: 'message_body',
+            key: 'message_body',
         },
     ];
 

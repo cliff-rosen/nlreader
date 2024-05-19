@@ -8,7 +8,7 @@ const contentStyle = {
 
 const navigationData = [
   { key: 'batch', label: 'Select Batch' },
-  { key: 'clean', label: 'Clean' },
+  { key: 'clean', label: 'Clean Messages' },
   { key: 'articles', label: 'Extract Articles' },
   { key: 'topics', label: 'Compile Topics' },
   { key: 'read', label: 'Read' },

@@ -123,7 +123,7 @@ def insert_batch(label, email_account, start_date, end_date):
         with conn.cursor() as cursor:
             res = cursor.execute(
                 """
-                INSERT INTO batch (label, email_account, start_date, end_date)
+                INSERT INTO message_batches (label, email_account, start_date, end_date)
                 VALUES (%s, %s, %s, %s)
                 """,
                 (
