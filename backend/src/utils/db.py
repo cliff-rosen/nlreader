@@ -157,7 +157,7 @@ def insert_message(
             res = cursor.execute(
                 """
                 INSERT INTO messages (batch_id, message_date, message_sender, message_subject, message_body, message_body_html)
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """,
                 (
                     batch_id,
@@ -194,5 +194,7 @@ def get_messages_by_batch_id(batch_id):
     close_connection(conn)
     if len(rows) == 0:
         return {"result": "MESSAGES_NOT_FOUND"}
+    for row in rows:
+        row["message_body_html"] = html.unescape(row["message_body_html"])
     rows[0]["result"] = "SUCCESS"
     return rows

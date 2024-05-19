@@ -83,16 +83,21 @@ class Messages(Resource):
         end_date = request.args.get("endDate")
         messages = gmail_api.get_messages(service, label, start_date, end_date)
         batch_id = db.insert_batch(label, "-", start_date, end_date)
-        # for message in messages:
-        #     db.insert_message(
-        #         batch_id,
-        #         message["message_date"],
-        #         message["message_sender"],
-        #         message["message_subject"],
-        #         message["message_body"],
-        #         message["message_body_html"],
-        #     )
-        print(messages[:1])
+
+        for message in messages:
+            print("----------------------")
+            print(message["message_subject"])
+            print(message["message_body"][:10])
+            print(message["message_body_html"][:10])
+            db.insert_message(
+                batch_id,
+                message["message_date"],
+                message["message_sender"],
+                message["message_subject"],
+                message["message_body"],
+                message["message_body_html"],
+            )
+
         return {"messages": messages, "batch_id": batch_id}
 
 

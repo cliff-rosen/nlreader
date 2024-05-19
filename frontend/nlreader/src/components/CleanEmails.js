@@ -10,7 +10,7 @@ const CleanEmails = () => {
     const [emails, setEmails] = useState([])
 
     useEffect(() => {
-        const batch_id = 5
+        const batch_id = 25
         const getEmails = async () => {
             fetchGet(`batches?batch_id=${batch_id}`)
                 .then(res => {
@@ -52,7 +52,7 @@ const EmailMessage = ({ email }) => {
                 <Typography.Paragraph>
                     <b>Sender:</b> {email.message_sender}
                 </Typography.Paragraph>
-                <div dangerouslySetInnerHTML={{ __html: email.message_body }} />
+                <div dangerouslySetInnerHTML={{ __html: email.message_body_html }} />
             </div>
         </div>
     );

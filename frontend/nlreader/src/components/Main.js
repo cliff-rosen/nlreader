@@ -25,11 +25,6 @@ export function Main({ sessionManager }) {
     const [step, setStep] = useState('batch')
     const [currentScreen, setCurrentScreen] = useState('1'); // Initial screen
 
-    const handleScreenChange = (newScreenKey) => {
-        setCurrentScreen(newScreenKey);
-        // Optionally, perform additional actions based on the new screen
-    };
-
     return (
         <Layout style={layoutStyle}>
             <LeftNav currentScreen={currentScreen} onScreenChange={setStep} />
@@ -42,8 +37,7 @@ export function Main({ sessionManager }) {
                         <a href={config.url.GAUTH_URL} rel="noopener noreferrer">
                             Authorize
                         </a>
-                    </div> : ""}
-                <button onClick={getLabels}>Get Labels</button> */}
+                    </div> : ""} */}
 
             </Content>
         </Layout>
