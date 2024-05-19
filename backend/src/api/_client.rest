@@ -7,7 +7,7 @@ accept: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJ1c2VyX2lkX2dvb2dsZSI6IjEwODk0MDg1NTU0ODYxNTY0ODE5MiIsInVzZXJfZW1haWwiOiJjbGlmZi5yb3NlbkBnbWFpbC5jb20iLCJmaXJzdF9uYW1lIjoiQ2xpZmYiLCJsYXN0X25hbWUiOiJSb3NlbiJ9.bDmOUs_YUXnaCDCdwD1UbW2xw-64aGzVXoHDk71xLr4
 ###
 
-GET http://127.0.0.1:5001/messages?label=SENT&startDate=2024-05-12&endDate=2024-05-17
+GET http://127.0.0.1:5001/messages?label=Label_2689345936544895630&startDate=2024-05-12&endDate=2024-05-12
 accept: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJ1c2VyX2lkX2dvb2dsZSI6IjEwODk0MDg1NTU0ODYxNTY0ODE5MiIsInVzZXJfZW1haWwiOiJjbGlmZi5yb3NlbkBnbWFpbC5jb20iLCJmaXJzdF9uYW1lIjoiQ2xpZmYiLCJsYXN0X25hbWUiOiJSb3NlbiJ9.bDmOUs_YUXnaCDCdwD1UbW2xw-64aGzVXoHDk71xLr4
 

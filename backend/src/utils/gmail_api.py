@@ -1,11 +1,11 @@
+from flask import session, redirect, url_for
+from datetime import datetime, timedelta
 import google.oauth2.credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 import os, pickle
 import base64
-from flask import session, redirect, url_for
-from datetime import datetime, timedelta
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = [
@@ -95,7 +95,8 @@ def get_messages(service, label, start_date, end_date):
                 "message_date": message["message_date"],
                 "message_sender": message["message_sender"],
                 "message_subject": message["message_subject"],
-                "message_body": message["message_body"][:50],
+                "message_body": message["message_body"],
+                "message_body_html": message["message_body_html"],
             }
         )
     return messages
@@ -142,17 +143,18 @@ def get_message(service, id):
         (header["value"] for header in headers if header["name"] == "Subject"),
         "No Subject",
     )
-    text = get_message_text(msg)
+    [message_html, message_text] = get_message_body(msg)
     return {
         "msg": msg,
         "message_date": date,
         "message_sender": sender,
         "message_subject": subject,
-        "message_body": text,
+        "message_body": message_text,
+        "message_body_html": message_html,
     }
 
 
-def get_message_text(message):
+def get_message_body(message):
     print("entered get_message_text")
     try:
         payload = message.get("payload", {})
@@ -165,27 +167,28 @@ def get_message_text(message):
             parts = payload.get("parts", [])
             # print("payload:", payload)
             text = ""
+            html = ""
             for part in parts:
                 print(f" processing part {part['partId']} of type {part['mimeType']}")
-                if part["mimeType"] == "text/plain":
+                if part["mimeType"] in ["text/plain", "text/html"]:
                     data = part["body"]["data"]
                     data_decoded = base64.urlsafe_b64decode(
                         data.encode("ASCII")
                     ).decode("utf-8")
                     # print(part["mimeType"])
                     # print(data_decoded[:100])
-                    text += data_decoded
-            if text:
-                return text
-            else:
-                return "No text body found"
+                    if part["mimeType"] == "text/plain":
+                        text += data_decoded
+                    else:
+                        html += data_decoded
+            return [html, text]
         else:
-            return "No text body found"
+            return ["No text body found", "No text body found"]
 
     except Exception as e:
         print("error", e)
         text = "ERROR"
-    return "No text body found"
+    return ["ERROR", "ERROR"]
 
 
 def get_labels(service):

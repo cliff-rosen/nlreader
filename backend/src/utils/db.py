@@ -1,4 +1,5 @@
 import pymysql.cursors
+import html
 import json
 
 # from utils import logging
@@ -147,13 +148,15 @@ def insert_message(
     message_sender,
     message_subject,
     message_body,
+    message_body_html,
 ):
     try:
+        message_body_html = html.escape(message_body_html)
         conn = get_connection()
         with conn.cursor() as cursor:
             res = cursor.execute(
                 """
-                INSERT INTO messages (batch_id, message_date, message_sender, message_subject, message_body)
+                INSERT INTO messages (batch_id, message_date, message_sender, message_subject, message_body, message_body_html)
                 VALUES (%s, %s, %s, %s, %s)
                 """,
                 (
@@ -162,6 +165,7 @@ def insert_message(
                     message_sender,
                     message_subject,
                     message_body,
+                    message_body_html,
                 ),
             )
         conn.commit()
