@@ -14,7 +14,7 @@ import { Main } from './components/Main';
 const { Header, Footer, Sider, Content } = Layout;
 
 const layoutStyle = {
-  maxWidth: '1200px',
+  xmaxWidth: '1200px',
   margin: '0 auto',
   padding: '0px',
   backgroundColor: '#fff',
@@ -22,7 +22,7 @@ const layoutStyle = {
 
 const contentStyle = {
   padding: '0 48px',
-  backgroundColor: '#fff',
+  backgroundColor: '#eee',
 };
 
 function App() {

@@ -1,9 +1,10 @@
 // MyForm.js
 
 import React, { useState, useEffect } from 'react';
-import { Typography, Button, Divider } from 'antd';
+import { Button, Divider } from 'antd';
 import { fetchGet } from '../utils/APIUtils';
 import EmailList from './EmailList';
+import { EmailMessage } from './EmailMessage';
 
 
 const CleanEmails = () => {
@@ -11,7 +12,7 @@ const CleanEmails = () => {
     const [emailID, setEmailID] = useState(0)
 
     useEffect(() => {
-        const batch_id = 25
+        const batch_id = 26
         const getEmails = async () => {
             fetchGet(`batches?batch_id=${batch_id}`)
                 .then(res => {
@@ -25,7 +26,7 @@ const CleanEmails = () => {
 
     return (
         <div>
-            <div style={{ maxWidth: '600px', margin: '0 auto', xborder: 'solid' }}>
+            <div style={{ xmaxWidth: '600px', margin: '0 auto', xborder: 'solid' }}>
                 <h1>Clean Emails</h1>
 
                 <div>
@@ -48,28 +49,4 @@ const CleanEmails = () => {
 
 export default CleanEmails;
 
-// component that displays an email included date, sender, subject, and body
-// uses antd Table component to display the data
-// takes in an email object as a prop
-const EmailMessage = ({ email }) => {
-    if (!email) {
-        return null;
-    }
-    return (
-        <div>
-            <div>
-                <Typography.Paragraph>
-                    <b>From:</b> {email.message_subject}
-                </Typography.Paragraph>
-                <Typography.Paragraph>
-                    <b>Date:</b> {email.message_date}
-                </Typography.Paragraph>
-                <Typography.Paragraph>
-                    <b>Sender:</b> {email.message_sender}
-                </Typography.Paragraph>
-                <div dangerouslySetInnerHTML={{ __html: email.message_body_html }} />
-            </div>
-        </div>
-    );
-}
 

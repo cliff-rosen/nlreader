@@ -9,7 +9,7 @@ import LeftNav from './LeftNav';
 const { Header, Footer, Sider, Content } = Layout;
 
 const layoutStyle = {
-    maxWidth: '1200px',
+    xmaxWidth: '1200px',
     margin: '0 auto',
     padding: '0px',
     backgroundColor: '#eee',
